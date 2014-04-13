@@ -1,4 +1,4 @@
-// GL_Two.h : main header file for the GL_ONE application
+// GL_Two.h : main header file for the GL_TWO application
 //
 
 #ifndef __AFXWIN_H__

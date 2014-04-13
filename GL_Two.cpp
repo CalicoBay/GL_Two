@@ -78,7 +78,7 @@ BOOL CGL_TwoApp::InitInstance()
 
 	CMultiDocTemplate* pDocTemplate;
 	pDocTemplate = new CMultiDocTemplate(
-		IDR_GL_ONETYPE,
+		IDR_GL_TWOTYPE,
 		RUNTIME_CLASS(CGL_TwoDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CGL_TwoView));

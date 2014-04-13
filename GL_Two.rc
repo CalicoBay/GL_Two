@@ -28,7 +28,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_GL_ONETYPE          ICON    DISCARDABLE     "res\\GLTwoDoc.ico"
+IDR_GL_TWOTYPE          ICON    DISCARDABLE     "res\\GLTwoDoc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -85,7 +85,7 @@ BEGIN
     END
 END
 
-IDR_GL_ONETYPE MENU PRELOAD DISCARDABLE 
+IDR_GL_TWOTYPE MENU PRELOAD DISCARDABLE 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -325,7 +325,7 @@ BEGIN
     PUSHBUTTON      "&Import",IDC_IMPORT,189,103,50,14
     PUSHBUTTON      "Co&py",IDC_COPY,189,83,50,14
     PUSHBUTTON      "&Color",IDC_COLOR,189,45,50,14
-    CONTROL         "O&ne Color",IDC_ONE_COLOR,"Button",BS_AUTOCHECKBOX | 
+    CONTROL         "Si&ngle Color",IDC_SINGLE_COLOR,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,126,66,46,11
     CONTROL         "Clip Ob&Ject",IDC_IS_A_CLIP,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,189,65,50,13
@@ -409,13 +409,13 @@ BEGIN
         BLOCK "040904B0"
         BEGIN
             VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "GL_ONE MFC Application\0"
+            VALUE "FileDescription", "GL_TWO MFC Application\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "GL_ONE\0"
+            VALUE "InternalName", "GL_TWO\0"
             VALUE "LegalCopyright", "Copyright © 1997\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "GL_ONE.EXE\0"
-            VALUE "ProductName", "GL_ONE Application\0"
+            VALUE "OriginalFilename", "GL_TWO.EXE\0"
+            VALUE "ProductName", "GL_TWO Application\0"
             VALUE "ProductVersion", "1, 0, 0, 1\0"
         END
     END
@@ -436,7 +436,7 @@ END
 STRINGTABLE PRELOAD DISCARDABLE 
 BEGIN
     IDR_MAINFRAME           "GL_Two"
-    IDR_GL_ONETYPE          "\nGL_Two\nGL_Two\nGL_Two Files (*.gl1)\n.GL1\nGLTwo.Document\nGL_Two Document"
+    IDR_GL_TWOTYPE          "\nGL_Two\nGL_Two\nGL_Two Files (*.gl1)\n.GL1\nGLTwo.Document\nGL_Two Document"
     ID_INDICATOR_FOV        "Field of View"
     ID_INDICATOR_LOOK_FROM  "Look From"
     ID_INDICATOR_LOOK_AT    "Look At"

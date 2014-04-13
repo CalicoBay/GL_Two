@@ -6,7 +6,7 @@
 #define IDD_OBJECTVIEW                  102
 #define ID_INDICATOR_TIME               103
 #define IDR_MAINFRAME                   128
-#define IDR_GL_ONETYPE                  129
+#define IDR_GL_TWOTYPE                  129
 #define IDD_CONSTRUCTION                130
 #define ID_INDICATOR_FOV                130
 #define IDB_AXIS                        131
@@ -98,7 +98,7 @@
 #define IDC_STATIC_ROTATEX              1075
 #define IDC_STATIC_ROTATEY              1076
 #define IDC_STATIC_ROTATEZ              1077
-#define IDC_ONE_COLOR                   1078
+#define IDC_SINGLE_COLOR                1078
 #define IDC_IS_A_CLIP                   1082
 #define IDC_DEFAULT_CHK                 1083
 #define ID_PRIMITIVES_POINTS            32771

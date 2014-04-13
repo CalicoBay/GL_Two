@@ -59,7 +59,7 @@ void CCompositeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TRANS_X, m_TranslateX);
 	DDX_Text(pDX, IDC_TRANS_Y, m_TranslateY);
 	DDX_Text(pDX, IDC_TRANS_Z, m_TranslateZ);
-	DDX_Check(pDX, IDC_ONE_COLOR, m_bSingleColorChecked);
+	DDX_Check(pDX, IDC_SINGLE_COLOR, m_bSingleColorChecked);
 	DDX_Check(pDX, IDC_IS_A_CLIP, m_bIs_A_Clip);
 	DDX_Check(pDX, IDC_DEFAULT_CHK, m_bDefaultToSingleColor);
 	//}}AFX_DATA_MAP
@@ -105,7 +105,7 @@ BEGIN_MESSAGE_MAP(CCompositeDlg, CDialog)
 	ON_BN_CLICKED(IDC_COPY, OnCopy)
 	ON_WM_VKEYTOITEM()
 	ON_BN_CLICKED(IDC_COLOR, OnColor)
-	ON_BN_CLICKED(IDC_ONE_COLOR, OnSingleColor)
+	ON_BN_CLICKED(IDC_SINGLE_COLOR, OnSingleColor)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
