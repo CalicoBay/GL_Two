@@ -496,7 +496,7 @@ int CGLComp::Change()
 		m_bIsThisClipped = dlg.m_bIs_A_Clip;
 		POSITION pos = m_CompList.GetHeadPosition();
 		CGLObjects* pObject;
-		if (dlg.m_bDefaultToOneColor)
+		if (dlg.m_bDefaultToSingleColor)
 		{
 			m_bColorWasDifferent = TRUE;
 			while (pos != NULL)
@@ -627,7 +627,7 @@ CGLObjects* CGLComp::Make()
 		pGLObject->m_bIsThisClipped = dlg.m_bIs_A_Clip;
 		POSITION pos = pGLObject->m_CompList.GetHeadPosition();
 		CGLObjects* pObject;
-		if (dlg.m_bDefaultToOneColor)
+		if (dlg.m_bDefaultToSingleColor)
 		{
 			pGLObject->m_bColorWasDifferent = TRUE;
 			while (pos != NULL)

@@ -31,9 +31,9 @@ CCompositeDlg::CCompositeDlg(CGLComp* pComp, CWnd* pParent /*=NULL*/)
 	m_TranslateX = 0.0;
 	m_TranslateY = 0.0;
 	m_TranslateZ = 0.0;
-	m_bOneColorChecked = FALSE;
+	m_bSingleColorChecked = FALSE;
 	m_bIs_A_Clip = FALSE;
-	m_bDefaultToOneColor = FALSE;
+	m_bDefaultToSingleColor = FALSE;
 	//}}AFX_DATA_INIT
 	m_pCompObj = pComp;
 	m_pView    = (CGL_TwoView*)pParent;
@@ -59,9 +59,9 @@ void CCompositeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TRANS_X, m_TranslateX);
 	DDX_Text(pDX, IDC_TRANS_Y, m_TranslateY);
 	DDX_Text(pDX, IDC_TRANS_Z, m_TranslateZ);
-	DDX_Check(pDX, IDC_ONE_COLOR, m_bOneColorChecked);
+	DDX_Check(pDX, IDC_ONE_COLOR, m_bSingleColorChecked);
 	DDX_Check(pDX, IDC_IS_A_CLIP, m_bIs_A_Clip);
-	DDX_Check(pDX, IDC_DEFAULT_CHK, m_bDefaultToOneColor);
+	DDX_Check(pDX, IDC_DEFAULT_CHK, m_bDefaultToSingleColor);
 	//}}AFX_DATA_MAP
 }
 
@@ -72,7 +72,7 @@ void CCompositeDlg::SetColorLogic(CGLComp* pCompObj)
 	{
 		POSITION pos = pCompObj->m_CompList.GetHeadPosition();
 		CGLObjects* pObject;
-		if (m_bOneColorChecked)
+		if (m_bSingleColorChecked)
 		{
 			pCompObj->SetColorIsDifferent(FALSE);
 			while (pos != NULL)
@@ -105,7 +105,7 @@ BEGIN_MESSAGE_MAP(CCompositeDlg, CDialog)
 	ON_BN_CLICKED(IDC_COPY, OnCopy)
 	ON_WM_VKEYTOITEM()
 	ON_BN_CLICKED(IDC_COLOR, OnColor)
-	ON_BN_CLICKED(IDC_ONE_COLOR, OnOneColor)
+	ON_BN_CLICKED(IDC_ONE_COLOR, OnSingleColor)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -144,11 +144,11 @@ BOOL CCompositeDlg::OnInitDialog()
 			m_ObjectList.SetItemDataPtr(n_Selection, (void*)pObject);
 		}
 		if (m_pCompObj->GetIsColorDifferent())
-			m_bOneColorChecked = TRUE;
+			m_bSingleColorChecked = TRUE;
 		if (m_pCompObj->GetIsThisClipped())
 			m_bIs_A_Clip = TRUE;
 		if (m_pCompObj->GetWasColorDifferent())
-			m_bDefaultToOneColor = TRUE;
+			m_bDefaultToSingleColor = TRUE;
 		m_str_ObjectDescriptor = m_pCompObj->GetDescriptor();
 		m_byteColorArray[0] = m_pCompObj->GetColor()[0];
 		m_byteColorArray[1] = m_pCompObj->GetColor()[1];
@@ -177,7 +177,7 @@ void CCompositeDlg::OnDblclkTypeList()
 	CGLObjects* pObj = (*p_funcMake)();
 	if (pObj)
 	{
-		if (m_bOneColorChecked)
+		if (m_bSingleColorChecked)
 			pObj->SetColorIsDifferent(FALSE);
 		int n_Selection = m_ObjectList.AddString(pObj->GetDescriptor());
 		m_ObjectList.SetItemDataPtr(n_Selection, (void*)pObj);
@@ -293,14 +293,14 @@ void CCompositeDlg::OnColor()
 	}
 }
 
-void CCompositeDlg::OnOneColor() 
+void CCompositeDlg::OnSingleColor() 
 {		
 	UpdateData(TRUE);
 	if (m_pCompObj)
 	{
 		POSITION pos = m_pCompObj->m_CompList.GetHeadPosition();
 		CGLObjects* pObject;
-		if (m_bOneColorChecked)
+		if (m_bSingleColorChecked)
 		{
 			m_pCompObj->SetColorIsDifferent(TRUE);
 			while (pos != NULL)

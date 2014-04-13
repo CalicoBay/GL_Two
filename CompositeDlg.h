@@ -31,9 +31,9 @@ public:
 	double	m_TranslateX;
 	double	m_TranslateY;
 	double	m_TranslateZ;
-	BOOL	m_bOneColorChecked;
+	BOOL	m_bSingleColorChecked;
 	BOOL	m_bIs_A_Clip;
-	BOOL	m_bDefaultToOneColor;
+	BOOL	m_bDefaultToSingleColor;
 	//}}AFX_DATA
 	CGLComp* m_pCompObj;
 	BYTE m_byteColorArray[3];
@@ -57,7 +57,7 @@ protected:
 	afx_msg void OnCopy();
 	afx_msg int OnVKeyToItem(UINT nKey, CListBox* pListBox, UINT nIndex);
 	afx_msg void OnColor();
-	afx_msg void OnOneColor();
+	afx_msg void OnSingleColor();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -329,7 +329,7 @@ BEGIN
                     WS_TABSTOP,126,66,46,11
     CONTROL         "Clip Ob&Ject",IDC_IS_A_CLIP,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,189,65,50,13
-    CONTROL         "De&fault to One Color",IDC_DEFAULT_CHK,"Button",
+    CONTROL         "De&fault to Single Color",IDC_DEFAULT_CHK,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,101,47,79,10
 END
 
