@@ -1,0 +1,758 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_GL_ONETYPE          ICON    DISCARDABLE     "res\\GLTwoDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDB_AXIS                BITMAP  DISCARDABLE     "res\\axisicon.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About GL_Two...",            ID_APP_ABOUT
+    END
+END
+
+IDR_GL_ONETYPE MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "&Clear All",                  ID_EDIT_CLEARALL
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "Status &Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "&Settings",                   ID_VIEW_SETTINGS
+    END
+    POPUP "&Primitives"
+    BEGIN
+        MENUITEM "P&oints",                     ID_PRIMITIVES_POINTS
+        MENUITEM "&Lines",                      ID_PRIMITIVES_LINES
+        MENUITEM "Pol&ygons",                   ID_PRIMITIVES_POLYGONS
+    END
+    POPUP "&Solids"
+    BEGIN
+        MENUITEM "&Box",                        ID_SOLIDS_BOX
+        MENUITEM "C&one",                       ID_SOLIDS_CONE
+        MENUITEM "Dis&k",                       ID_SOLIDS_DISK
+        MENUITEM "&Sphere",                     ID_SOLIDS_SPHERE
+        MENUITEM "Tea&pot",                     ID_SOLIDS_TEAPOT
+        MENUITEM "To&rus",                      ID_SOLIDS_TORUS
+    END
+    POPUP "&Objects"
+    BEGIN
+        MENUITEM "&New",                        ID_OBJECTS_NEW
+        MENUITEM "&List",                       ID_OBJECTS_LIST
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About GL_Two...",            ID_APP_ABOUT
+        MENUITEM "&Implementation Info",        ID_HELP_IMPLEMENTATIONINFO
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 217, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About GL_Two"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "GL_Two Version 1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright © 1997",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,32,14,WS_GROUP
+END
+
+IDD_CONSTRUCTION DIALOGEX 0, 0, 273, 198
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Construction Parameters"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Radius",IDC_STATIC_RADIUS,20,16,40,8
+    EDITTEXT        IDC_RADIUS,70,12,40,14,ES_AUTOHSCROLL
+    LTEXT           "Size   ",IDC_STATIC_SIZE,20,36,40,8
+    EDITTEXT        IDC_SCALE,70,34,40,14,ES_AUTOHSCROLL
+    LTEXT           "Size X  ",IDC_STATIC_WIDTH,20,57,40,8
+    EDITTEXT        IDC_WIDTH,70,54,40,14,ES_AUTOHSCROLL
+    LTEXT           "Size Y",IDC_STATIC_HEIGHT,20,76,40,8
+    EDITTEXT        IDC_HEIGHT,70,74,40,14,ES_AUTOHSCROLL
+    LTEXT           "Size Z",IDC_STATIC_DEPTH,20,97,40,8
+    EDITTEXT        IDC_DEPTH,70,94,40,14,ES_AUTOHSCROLL
+    LTEXT           "Inner radius",IDC_STATIC_IN_RADIUS,20,116,40,8
+    EDITTEXT        IDC_IN_RADIUS,70,114,40,14,ES_AUTOHSCROLL
+    LTEXT           "Outer radius",IDC_STATIC_OUT_RADIUS,20,137,40,8
+    EDITTEXT        IDC_OUT_RADIUS,70,134,40,14,ES_AUTOHSCROLL
+    LTEXT           "Translate &X",IDC_STATIC_TRANSX,158,66,37,8
+    EDITTEXT        IDC_TRANSX,206,60,40,14,ES_AUTOHSCROLL
+    LTEXT           "Translate &Y",IDC_STATIC_TRANSY,158,102,37,8
+    EDITTEXT        IDC_TRANSY,206,98,40,14,ES_AUTOHSCROLL
+    LTEXT           "Translate &Z",IDC_STATIC_TRANSZ,158,138,37,8
+    EDITTEXT        IDC_TRANSZ,206,136,40,14,ES_AUTOHSCROLL
+    LTEXT           "Rotate X",IDC_STATIC_ROTATEX,158,84,29,8
+    EDITTEXT        IDC_ROTATE_X,206,79,40,14,ES_AUTOHSCROLL
+    LTEXT           "Rotate Y",IDC_STATIC_ROTATEY,158,120,29,8
+    EDITTEXT        IDC_ROTATE_Y,206,117,40,14,ES_AUTOHSCROLL
+    LTEXT           "Rotate Z",IDC_STATIC_ROTATEZ,158,159,29,8
+    EDITTEXT        IDC_ROTATE_Z,206,155,40,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Color",IDC_COLOR,216,174,50,14
+    DEFPUSHBUTTON   "OK",IDOK,216,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,216,24,50,14
+    CONTROL         131,IDC_STATIC,"Static",SS_BITMAP,121,4,54,41,
+                    WS_EX_TRANSPARENT | WS_EX_CLIENTEDGE
+    EDITTEXT        IDC_EDIT_DESCRIPTOR,182,41,84,14,ES_AUTOHSCROLL
+    CONTROL         "C&losed Cylinder",IDC_CLOSED_CHK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,177,64,10
+END
+
+IDD_VIEW DIALOG DISCARDABLE  0, 0, 183, 181
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Camera Orientation"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EYEX,43,36,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EYEY,43,51,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EYEZ,43,66,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FOV,129,115,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEAR_CLIP,129,134,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FAR_CLIP,129,153,40,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,126,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,126,24,50,14
+    CONTROL         131,IDC_STATIC,"Static",SS_BITMAP,104,49,30,29
+    LTEXT           "Eye X",IDC_STATIC,13,39,20,8
+    LTEXT           "Eye Y",IDC_STATIC,13,54,20,8
+    LTEXT           "Eye Z",IDC_STATIC,13,69,20,8
+    LTEXT           "Center X",IDC_STATIC,13,84,28,8
+    LTEXT           "Center Y",IDC_STATIC,13,99,28,8
+    LTEXT           "Center Z",IDC_STATIC,13,114,28,8
+    LTEXT           "Up X",IDC_STATIC,13,129,17,8
+    LTEXT           "Up Y",IDC_STATIC,13,144,17,8
+    LTEXT           "Up Z",IDC_STATIC,13,159,17,8
+    LTEXT           "Field of View",IDC_STATIC,88,118,41,8
+    LTEXT           "Near Clip",IDC_STATIC,88,137,30,8
+    LTEXT           "Far Clip",IDC_STATIC,88,156,24,8
+    EDITTEXT        IDC_CENTERX,43,81,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CENTERY,43,96,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CENTERZ,43,111,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UPX,43,126,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UPY,43,141,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UPZ,43,156,40,14,ES_AUTOHSCROLL
+END
+
+IDD_POLYGON DIALOG DISCARDABLE  0, 0, 183, 92
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Polygon Construction"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_POINTS,77,8,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DOUBLEX,27,38,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DOUBLEY,27,54,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DOUBLEZ,27,70,40,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Next",IDC_NEXT,126,41,50,14
+    PUSHBUTTON      "&Previous",IDC_PREVIOUS,126,60,50,14
+    DEFPUSHBUTTON   "OK",IDOK,126,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,126,24,50,14
+    LTEXT           "Number of vertices",IDC_STATIC,13,14,60,8
+    LTEXT           "X",IDC_X,13,44,8,8
+    LTEXT           "Y",IDC_Y,13,57,9,8
+    LTEXT           "Z",IDC_Z,13,70,9,8
+    LTEXT           "Vertex",IDC_STATIC,81,25,21,8
+    LTEXT           "Number",IDC_STATIC,79,35,26,8
+    EDITTEXT        IDC_EDIT5,82,44,20,14,ES_AUTOHSCROLL
+    CONTROL         "Convex",IDC_CONVEX,"Button",BS_AUTOCHECKBOX,14,25,40,10
+    PUSHBUTTON      "Color",IDC_COLOR,71,63,50,14
+END
+
+IDD_COMP_DLG DIALOG DISCARDABLE  0, 0, 246, 273
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Composite Objects"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Na&me",IDC_STATIC,46,10,20,8
+    EDITTEXT        IDC_EDIT_NAME,7,19,108,14,ES_AUTOHSCROLL
+    LTEXT           "Types to A&dd",IDC_STATIC,153,179,86,10,SS_SUNKEN
+    LISTBOX         IDC_TYPE_LIST,153,192,86,74,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | LBS_WANTKEYBOARDINPUT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Translate &X",IDC_STATIC,7,173,37,8
+    EDITTEXT        IDC_TRANS_X,47,167,36,14,ES_AUTOHSCROLL
+    LTEXT           "Translate &Y",IDC_STATIC,7,190,37,8
+    EDITTEXT        IDC_TRANS_Y,47,184,36,14,ES_AUTOHSCROLL
+    LTEXT           "Translate &Z",IDC_STATIC,7,207,37,8
+    EDITTEXT        IDC_TRANS_Z,47,201,36,14,ES_AUTOHSCROLL
+    LTEXT           "&Rotate X",IDC_STATIC,15,224,29,8
+    EDITTEXT        IDC_ROTATE_X,47,218,36,14,ES_AUTOHSCROLL
+    LTEXT           "R&otate Y",IDC_STATIC,17,241,29,8
+    EDITTEXT        IDC_ROTATE_Y,47,235,36,14,ES_AUTOHSCROLL
+    LTEXT           "Ro&tate Z",IDC_STATIC,15,258,29,8
+    EDITTEXT        IDC_ROTATE_Z,47,252,36,14,ES_AUTOHSCROLL
+    LTEXT           "&Scale X",IDC_STATIC,172,131,26,8
+    EDITTEXT        IDC_SCALE_X,205,125,34,14,ES_AUTOHSCROLL
+    LTEXT           "Sca&le Y",IDC_STATIC,172,149,26,8
+    EDITTEXT        IDC_SCALE_Y,205,143,34,14,ES_AUTOHSCROLL
+    LTEXT           "Sc&ale Z",IDC_STATIC,172,167,26,8
+    EDITTEXT        IDC_SCALE_Z,205,161,34,14,ES_AUTOHSCROLL
+    LTEXT           "Compon&ents",IDC_STATIC,32,47,52,10,SS_SUNKEN
+    LISTBOX         IDC_OBJ_LIST,7,63,101,98,LBS_NOINTEGRALHEIGHT | 
+                    LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_HSCROLL | 
+                    WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,189,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,189,25,50,14
+    PUSHBUTTON      "&Import",IDC_IMPORT,189,103,50,14
+    PUSHBUTTON      "Co&py",IDC_COPY,189,83,50,14
+    PUSHBUTTON      "&Color",IDC_COLOR,189,45,50,14
+    CONTROL         "O&ne Color",IDC_ONE_COLOR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,126,66,46,11
+    CONTROL         "Clip Ob&Ject",IDC_IS_A_CLIP,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,189,65,50,13
+    CONTROL         "De&fault to One Color",IDC_DEFAULT_CHK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,101,47,79,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_CONSTRUCTION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 266
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 191
+    END
+
+    IDD_VIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 176
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 174
+    END
+
+    IDD_POLYGON, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 176
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 85
+    END
+
+    IDD_COMP_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 239
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 266
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "GL_ONE MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "GL_ONE\0"
+            VALUE "LegalCopyright", "Copyright © 1997\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "GL_ONE.EXE\0"
+            VALUE "ProductName", "GL_ONE Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "GL_Two"
+    IDR_GL_ONETYPE          "\nGL_Two\nGL_Two\nGL_Two Files (*.gl1)\n.GL1\nGLTwo.Document\nGL_Two Document"
+    ID_INDICATOR_FOV        "Field of View"
+    ID_INDICATOR_LOOK_FROM  "Look From"
+    ID_INDICATOR_LOOK_AT    "Look At"
+    ID_INDICATOR_CLIP       "Near far Clip"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "GL_Two"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+    AFX_IDS_MDICHILD        "Activate this window"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_PRIMITIVES_POINTS    "Sets a point."
+    ID_PRIMITIVES_LINES     "Draws a line between two or more points or vertices."
+    ID_PRIMITIVES_POLYGONS  "Draws simple convex polygons from three or more points or vertices."
+    ID_SOLIDS_BOX           "That is not a cube although it could be."
+    ID_SOLIDS_CUBE          "a.k.a. Hexahedron"
+    ID_SOLIDS_CONE          "Self explanatory"
+    ID_SOLIDS_CYLINDER      "You know what a cylinder is!"
+    ID_SOLIDS_DODECAHEDRON  "A solid figure with twelve equal sides."
+    ID_SOLIDS_ICOSAHEDRON   "A solid with twenty plane sides."
+    ID_SOLIDS_OCTAHEDRON    "Eight plane sides."
+    ID_SOLIDS_TETRAHEDRON   "Four equal triangles form a solid."
+    ID_SOLIDS_TEAPOT        "Thats right an OpenGL teapot."
+    ID_SOLIDS_TORUS         "A geometrically perfect donut."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_SOLIDS_SPHERE        "Obvious"
+    ID_VIEW_SETTINGS        "Sets camera orientation (Projection Matrix)"
+    ID_SOLIDS_DISK          "Planar circle with or without hole in center."
+    ID_HELP_IMPEMENTATIONINFO "Get OpenGL specific values"
+    ID_HELP_IMPLEMENTATIONINFO "Implementation specific OpenGL info."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_TIME       "Time"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Canada) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\GL_Two.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SELECTION DIALOG DISCARDABLE  0, 0, 186, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Selection List"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    LISTBOX         IDC_HIT_LIST,7,7,114,81,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Delete",IDC_DELETE_BUTTON,129,42,50,14
+    PUSHBUTTON      "&Repeat",IDC_REPEAT_BTN,129,61,50,15
+END
+
+IDD_REPEAT_DIALOG DIALOG DISCARDABLE  0, 0, 186, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "How many copies and where?"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDIT_COPIES,79,7,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_XOFF,79,23,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_YOFF,79,39,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_ZOFF,79,55,40,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    LTEXT           "Number of Copies",IDC_STATIC_COPIES,7,13,57,8
+    LTEXT           "X Offset",IDC_STATIC_XOFF,7,29,57,8
+    LTEXT           "Y Offset",IDC_STATIC_YOFF,7,45,57,8
+    LTEXT           "Z Offset",IDC_STATIC_ZOFF,7,61,57,8
+END
+
+IDD_OBJECTVIEW DIALOGEX 0, 0, 280, 186
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Objects in this and other open documents."
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,223,146,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,223,165,50,14
+    CONTROL         "Tree1",IDC_OBJECT_TREE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | 
+                    WS_BORDER | WS_TABSTOP,7,7,206,172,WS_EX_DLGMODALFRAME | 
+                    WS_EX_CLIENTEDGE
+    PUSHBUTTON      "&Copy",IDC_COPY_BUTTON,223,126,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_SELECTION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_REPEAT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_OBJECTVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 273
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 179
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""res\\GL_Two.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (Canada) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "res\GL_Two.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
