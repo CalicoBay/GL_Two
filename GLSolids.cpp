@@ -284,7 +284,9 @@ void CGLBox::Draw(GLenum mode)
 	{
 		glColor3ubv(m_color);
 	}
-	glEnable(GL_NORMALIZE);
+   glCullFace(GL_BACK);
+   glEnable(GL_CULL_FACE);
+   glEnable(GL_NORMALIZE);
 	glPushMatrix();
 		glTranslated(m_pPosition->xyz[0], m_pPosition->xyz[1], m_pPosition->xyz[2]);
 		if(m_pRotation->xyz[0]!=0)
@@ -329,6 +331,7 @@ void CGLBox::Draw(GLenum mode)
 	glPopMatrix();
 	//glFlush();
 	glDisable(GL_NORMALIZE);
+   glDisable(GL_CULL_FACE);
 }
 
 int CGLBox::Change()

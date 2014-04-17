@@ -40,9 +40,9 @@ protected:
 	HGLRC    m_hRC;
 	GLenum   m_poly_face, m_poly_mode;
 	GLdouble m_nAspect, m_nField_of_View, m_nNear, m_nFar;
-	GLdouble m_nEyex, m_nEyey, m_nEyez;
-	GLdouble m_nCenterx, m_nCentery, m_nCenterz;
-	GLdouble m_nUpx, m_nUpy, m_nUpz;
+	GLdouble m_nEyeX, m_nEyeY, m_nEyeZ;
+	GLdouble m_nCenterX, m_nCenterY, m_nCenterZ;
+	GLdouble m_nUpX, m_nUpY, m_nUpZ;
 
 // Operations
 // Overrides
@@ -90,6 +90,9 @@ protected:
 	afx_msg void OnHelpImplementationInfo();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+   afx_msg void OnViewWireframe();
+   afx_msg void OnUpdateViewWireframe(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in GL_TwoView.cpp
