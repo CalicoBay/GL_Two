@@ -124,6 +124,7 @@
 #define ID_HELP_IMPEMENTATIONINFO       32791
 #define ID_HELP_IMPLEMENTATIONINFO      32792
 #define ID_VIEW_WIREFRAME               32793
+#define ID_VIEW_BLACKANDWHITE           32794
 
 // Next default values for new objects
 // 
@@ -131,7 +132,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32794
+#define _APS_NEXT_COMMAND_VALUE         32795
 #define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           104
 #endif

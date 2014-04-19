@@ -87,12 +87,12 @@ float cpdata[][3] = {
    GLdouble dist,invdist;
  
    dist=VecLen(A);
-   if(!(dist==0.0))
+   if(0.0 != dist)
    {
-     invdist=1.0/dist;
-     A[0]*=invdist;
-     A[1]*=invdist;
-     A[2]*=invdist;
+     invdist = 1.0/dist;
+     A[0] *= invdist;
+     A[1] *= invdist;
+     A[2] *= invdist;
 	 return 1;
    }
    else
@@ -126,8 +126,6 @@ CGLObjects::CGLObjects(GLubyte* gl_color3bytes)
 	m_bIsThisClipped	 = FALSE;
 	m_bConvex			 = TRUE;
 	m_bClosed			 = FALSE;
-	//m_bClean			 = FALSE;
-	m_strDescriptor      = "";
 }
 
 void CGLObjects::SetColor(GLubyte* gl_color3ub)
@@ -275,7 +273,7 @@ CGLBox::CGLBox(GLubyte* gl_color3bytes, GLdouble* transform3d,
 	GLdouble* gl_rotation3d, GLdouble* gl_Scale3d)
 		:CGLSolids(gl_color3bytes, transform3d, gl_rotation3d, gl_Scale3d)
 {
-	m_strDescriptor = "Box";
+	m_strDescriptor = _T("Box");
 }
 
 void CGLBox::Draw(GLenum mode)
@@ -327,9 +325,7 @@ void CGLBox::Draw(GLenum mode)
 			glVertex3d(0, m_pScale->xyz[1], m_pScale->xyz[2]);
 			glVertex3d(0, m_pScale->xyz[1], 0);
 		glEnd();
-		//auxSolidBox(m_pScale->xyz[0], m_pScale->xyz[1], m_pScale->xyz[2]);
 	glPopMatrix();
-	//glFlush();
 	glDisable(GL_NORMALIZE);
    glDisable(GL_CULL_FACE);
 }
@@ -395,7 +391,7 @@ CGLObjects* CGLBox::Make()
 			scale[1] = dlg.m_height;
 			scale[2] = dlg.m_depth;
 			pGLObject = new CGLBox(dlg.m_byteColorArray, transform, rotate, scale);
-			pGLObject->m_strDescriptor = dlg.m_str_Descriptor;
+         pGLObject->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"), dlg.m_str_Descriptor, transform[0], transform[1], transform[2]);// = dlg.m_str_Descriptor;
 		}
 	}
 	return pGLObject;
@@ -420,12 +416,12 @@ CGLObjects* CGLBox::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc)
 	{
 		CGLBox* pBox = new CGLBox(GetColor(), transform, rotation, scale);
 		CString name = GetDescriptor();
-		int f  = name.Find(' ');
-		if (f > 0)
-			name = name.Left(f);
-		name.Format(_T("%s %.2f %.2f %.2f"),name, transform[0], transform[1],
-			transform[2]);
-		pBox->m_strDescriptor = name;
+		int f  = name.Find(_T(' '));
+      if(f > 0)
+      {
+         name = name.Left(f);
+      }
+		pBox->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"),name, transform[0], transform[1], transform[2]);
 		pBox->SetColorIsDifferent(GetIsColorDifferent());
 		if (pDoc)
 			pDoc->Add(pBox);
@@ -675,12 +671,12 @@ CGLObjects* CGLComp::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc)
 	{
 		CGLComp* pComp = new CGLComp(GetColor(), transform, rotation, scale);
 		CString name = GetDescriptor();
-		int f  = name.Find(' ');
-		if (f > 0)
-			name = name.Left(f);
-		name.Format(_T("%s %.2f %.2f %.2f"), name, transform[0], transform[1],
-			transform[2]);
-		pComp->m_strDescriptor = name;
+		int f  = name.Find(_T(' '));
+      if(f > 0)
+      {
+         name = name.Left(f);
+      }
+		pComp->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"), name, transform[0], transform[1], transform[2]);
 		pComp->m_bComposite = TRUE;
 		pComp->m_bColorIsDifferent = m_bColorIsDifferent;
 		pComp->m_bColorWasDifferent = m_bColorWasDifferent;
@@ -729,6 +725,7 @@ int CGLCone::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)2;
+   dlg.m_bClosed = m_bClosed;
 	dlg.m_width		= GetWidth();
 	dlg.m_height	= GetHeight();
 	dlg.m_depth		= GetDepth();
@@ -839,9 +836,8 @@ CGLObjects* CGLCone::Make()
 			radii[1]       = dlg.m_in_radius;
 			radii[2]       = dlg.m_radius; //Not used , just for fill.
 
-			pGLSolid = new CGLCone(dlg.m_byteColorArray, base_center,
-														radii, apex_center);
-			pGLSolid->m_strDescriptor = dlg.m_str_Descriptor;
+			pGLSolid = new CGLCone(dlg.m_byteColorArray, base_center, radii, apex_center);
+         pGLSolid->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"), dlg.m_str_Descriptor, base_center[0], base_center[1], base_center[2]);
 			pGLSolid->m_bClosed = dlg.m_bClosed;
 	}
 	return pGLSolid;
@@ -866,12 +862,12 @@ CGLObjects* CGLCone::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc)
 	{
 		CGLCone* pCone = new CGLCone(GetColor(), base_center, radii, apex_center);
 		CString name = GetDescriptor();
-		int f  = name.Find(' ');
-		if (f > 0)
-			name = name.Left(f);
-		name.Format(_T("%s %.2f %.2f %.2f"),name, base_center[0], base_center[1],
-			base_center[2]);
-		pCone->m_strDescriptor = name;
+		int f  = name.Find(_T(' '));
+      if(f > 0)
+      {
+         name = name.Left(f);
+      }
+		pCone->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"),name, base_center[0], base_center[1], base_center[2]);
 		pCone->m_bColorIsDifferent = GetIsColorDifferent();
 		pCone->m_bClosed = m_bClosed;
 		if (pDoc)
@@ -1012,7 +1008,7 @@ CGLObjects* CGLDisk::Make()
 
 			pGLSolid = new CGLDisk(dlg.m_byteColorArray, base_center,
 														radii, apex_center);
-			pGLSolid->m_strDescriptor = dlg.m_str_Descriptor;
+         pGLSolid->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"), dlg.m_str_Descriptor, base_center[0], base_center[1], base_center[2]);
 	}
 	return pGLSolid;
 }
@@ -1036,12 +1032,12 @@ CGLObjects* CGLDisk::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc)
 	{
 		CGLDisk* pDisk = new CGLDisk(GetColor(), base_center, radii, apex_center);
 		CString name = GetDescriptor();
-		int f  = name.Find(' ');
-		if (f > 0)
-			name = name.Left(f);
-		name.Format(_T("%s %.2f %.2f %.2f"),name, base_center[0], base_center[1],
-			base_center[2]);
-		pDisk->m_strDescriptor = name;
+		int f  = name.Find(_T(' '));
+      if(f > 0)
+      {
+         name = name.Left(f);
+      }
+		pDisk->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"),name, base_center[0], base_center[1], base_center[2]);
 		pDisk->m_bColorIsDifferent = GetIsColorDifferent();
 		if (pDoc)
 			pDoc->Add(pDisk);
@@ -1449,13 +1445,9 @@ CGLObjects* CGLSphere::Make()
 			scale[2]     = dlg.m_depth;
 			radius       = dlg.m_radius;
 
-			pGLSolid = new CGLSphere(radius, dlg.m_byteColorArray, transform,
-																	rotate, scale);
-			//CString name = dlg.m_str_Descriptor;
-			dlg.m_str_Descriptor.Format(_T("%s %.2f %.2f %.2f"), dlg.m_str_Descriptor,
-				transform[0], transform[1], transform[2]);
-			pGLSolid->m_strDescriptor = dlg.m_str_Descriptor;
-		}
+			pGLSolid = new CGLSphere(radius, dlg.m_byteColorArray, transform, rotate, scale);
+         pGLSolid->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"), dlg.m_str_Descriptor, transform[0], transform[1], transform[2]);
+      }
 	}
 	return pGLSolid;
 }
@@ -1477,15 +1469,14 @@ CGLObjects* CGLSphere::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc)
 	rotation[2]  = m_pRotation->xyz[2];
 	for(UINT i = 1; i <= copies; i++)
 	{
-		CGLSphere* pSphere = new CGLSphere(m_radius, GetColor(), transform,
-															rotation, scale);
+		CGLSphere* pSphere = new CGLSphere(m_radius, GetColor(), transform, rotation, scale);
 		CString name = GetDescriptor();
-		int f  = name.Find(' ');
-		if (f > 0)
-			name = name.Left(f);
-		name.Format(_T("%s %.2f %.2f %.2f"),name, transform[0], transform[1],
-			transform[2]);
-		pSphere->m_strDescriptor = name;
+		int f  = name.Find(_T(' '));
+      if(f > 0)
+      {
+         name = name.Left(f);
+      }
+		pSphere->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"),name, transform[0], transform[1], transform[2]);
 		pSphere->SetColorIsDifferent(GetIsColorDifferent());
 		if (pDoc)
 			pDoc->Add(pSphere);
@@ -1690,12 +1681,12 @@ CGLObjects* CGLTeapot::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc)
 		CGLTeapot* pTeapot = new CGLTeapot(GetColor(), transform,
 															rotation, scale);
 		CString name = GetDescriptor();
-		int f  = name.Find(' ');
-		if (f > 0)
-			name = name.Left(f);
-		name.Format(_T("%s %.2f %.2f %.2f"),name, transform[0], transform[1],
-			transform[2]);
-		pTeapot->m_strDescriptor = name;
+		int f  = name.Find(_T(' '));
+      if(f > 0)
+      {
+         name = name.Left(f);
+      }
+		pTeapot->m_strDescriptor.Format(_T("%s %.2f %.2f %.2f"),name, transform[0], transform[1], transform[2]);
 		pTeapot->SetColorIsDifferent(GetIsColorDifferent());
 		if (pDoc)
 			pDoc->Add(pTeapot);

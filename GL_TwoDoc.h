@@ -18,7 +18,7 @@ public:
 	BOOL m_bIsNew;
 // Operations
 public:
-	void Draw(GLenum mode);
+	void Draw(GLenum mode, BOOL bBlackAndWhite = FALSE);
 	void Add(CGLObjects* pObj);
 	void RemoveAll();
 

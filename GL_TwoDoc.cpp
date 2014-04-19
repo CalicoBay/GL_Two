@@ -76,19 +76,22 @@ void CGL_TwoDoc::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CGL_TwoDoc commands
-void CGL_TwoDoc::Draw(GLenum mode)
+void CGL_TwoDoc::Draw(GLenum mode, BOOL bBlackAndWhite/* = FALSE*/)
 {
-	POSITION pos = m_objects.GetHeadPosition();
-	if(pos != NULL)
+   if(TRUE == bBlackAndWhite)
+   {
+      GLubyte glBlack[] = {0, 0, 0};
+      glColor3ubv(glBlack);
+   }
+
+   POSITION pos = m_objects.GetHeadPosition();
+	while(NULL != pos)
 	{
-		BOOL IsIt = m_objects.GetHead()->GetIsColorDifferent();
-		m_objects.GetHead()->SetColorIsDifferent(TRUE);
-		while (pos != NULL)
-		{
-			CGLObjects* pObj = m_objects.GetNext(pos);
-			pObj->Draw(mode);
-		}
-		m_objects.GetHead()->SetColorIsDifferent(IsIt);
+      CGLObjects* pObj = m_objects.GetNext(pos);
+      BOOL IsIt = pObj->GetIsColorDifferent();
+      pObj->SetColorIsDifferent(!bBlackAndWhite);
+		pObj->Draw(mode);
+		pObj->SetColorIsDifferent(IsIt);
 	}
 }
 
@@ -103,9 +106,9 @@ void CGL_TwoDoc::RemoveAll()
 {
 	POSITION pos = m_objects.GetHeadPosition();
 
-	while( pos != NULL )
+	while(NULL != pos)
 	{
-		delete m_objects.GetNext( pos );
+		delete m_objects.GetNext(pos);
 	}
 	m_objects.RemoveAll();
 	SetModifiedFlag();

@@ -54,6 +54,8 @@ BEGIN_MESSAGE_MAP(CGL_TwoView, CView)
 	//}}AFX_MSG_MAP
    ON_COMMAND(ID_VIEW_WIREFRAME, &CGL_TwoView::OnViewWireframe)
    ON_UPDATE_COMMAND_UI(ID_VIEW_WIREFRAME, &CGL_TwoView::OnUpdateViewWireframe)
+   ON_COMMAND(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnViewBlackAndWhite)
+   ON_UPDATE_COMMAND_UI(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnUpdateViewBlackAndWhite)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +63,11 @@ END_MESSAGE_MAP()
 CGL_TwoView::CGL_TwoView()
 {
 	m_bDirty = TRUE;
+   m_fClearColor[0] = 1.0f;
+   m_fClearColor[1] = 1.0f;
+   m_fClearColor[2] = 1.0f;
+   m_fClearColor[3] = 1.0f;
+   m_bBlackBackground = TRUE;
 }
 
 CGL_TwoView::~CGL_TwoView()
@@ -78,36 +85,49 @@ void CGL_TwoView::OnDraw(CDC* pDC)
 UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
 {
 	CGL_TwoView* pView = (CGL_TwoView*)pParam;
-
-    if (pView == NULL ||
-        !pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView)))
+    if(NULL == pView || !pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView)))
 	{
-		AfxMessageBox(_T("Thread returned 0"));
+		AfxMessageBox(_T("CGL_TwoView::ThreadDraw returned 0"));
 		return 0;	// illegal parameter
 	}
-	wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC);	
-	GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
-	pView->ChangeCamera();
 
+	wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC);	
+	
+   GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
+	pView->ChangeCamera();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+   
+   if(FALSE == pView->m_bBlackBackground)
+   {
+      glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
+   }
+   else
+   {
+      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      glEnable(GL_COLOR_MATERIAL);
+      glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
+      glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
+      glEnable(GL_LIGHTING);
+      glEnable(GL_LIGHT0);
+   }
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
-	glEnable(GL_COLOR_MATERIAL);
-	glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
-	glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	if (pView->m_bDirty)
+	
+   if (pView->m_bDirty)
 	{
-		glNewList((GLuint)pView, GL_COMPILE_AND_EXECUTE);
-		pView->GetDocument()->Draw(GL_RENDER);//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
+      //glDeleteLists((GLuint)pView, 1);//Isn't necessary
+      glNewList((GLuint)pView, GL_COMPILE_AND_EXECUTE);
+      pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
 		glEndList();
 		pView->m_bDirty = FALSE;
 	}
-	else
-		glCallList((GLuint)pView);
+   else
+   {
+      glCallList((GLuint)pView);
+   }
+
 	wglMakeCurrent(NULL, NULL);
 	return 1;
 }
@@ -685,13 +705,13 @@ void CGL_TwoView::OnViewWireframe()
    if(GL_FILL == m_poly_mode)
    {
       m_poly_mode = GL_LINE;
-      AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
    }
    else if(GL_LINE == m_poly_mode)
    {
       m_poly_mode = GL_FILL;
-      AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
    }
+
+   AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
 }
 
 
@@ -704,5 +724,34 @@ void CGL_TwoView::OnUpdateViewWireframe(CCmdUI *pCmdUI)
    else if(GL_FILL == m_poly_mode)
    {
       pCmdUI->SetText(_T("&Wireframe"));
+   }
+}
+
+
+void CGL_TwoView::OnViewBlackAndWhite()
+{
+   if(m_bBlackBackground)
+   {
+      m_bBlackBackground = FALSE;
+   }
+   else
+   {
+      m_bBlackBackground = TRUE;
+   }
+
+   m_bDirty = TRUE;
+   AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
+}
+
+
+void CGL_TwoView::OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI)
+{
+   if(m_bBlackBackground)
+   {
+      pCmdUI->SetText(_T("&Monochrome"));
+   }
+   else
+   {
+      pCmdUI->SetText(_T("&Color"));
    }
 }

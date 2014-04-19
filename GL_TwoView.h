@@ -93,6 +93,12 @@ protected:
 public:
    afx_msg void OnViewWireframe();
    afx_msg void OnUpdateViewWireframe(CCmdUI *pCmdUI);
+protected:
+   GLclampf m_fClearColor[4];
+   BOOL m_bBlackBackground;
+public:
+   afx_msg void OnViewBlackAndWhite();
+   afx_msg void OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in GL_TwoView.cpp
