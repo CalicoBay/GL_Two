@@ -26,6 +26,7 @@ END_MESSAGE_MAP()
 static UINT indicators[] =
 {
 	ID_SEPARATOR,
+   ID_INDICATOR_VIEW_DIRTY,
 	ID_INDICATOR_CLIP,
 	ID_INDICATOR_FOV,
 	ID_INDICATOR_LOOK_FROM,
@@ -63,82 +64,54 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
-	CSize size;
-	CString strClip("Near             Far             ");
-	{
-		HGDIOBJ hOldFont = NULL;
-		HFONT hFont = (HFONT)m_wndStatusBar.SendMessage(WM_GETFONT);
-		CClientDC dc(NULL);
-		if (hFont != NULL) 
-			hOldFont = dc.SelectObject(hFont);
-		size = dc.GetTextExtent(strClip);
-		if (hOldFont != NULL) 
-			dc.SelectObject(hOldFont);
-	}
+   // TODO: Remove this if you don't want tool tips or a resizeable toolbar
+   m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
+      CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
 
-	// Update the pane to reflect the current string
+   // TODO: Delete these three lines if you don't want the toolbar to
+   //  be dockable
+   m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+   EnableDocking(CBRS_ALIGN_ANY);
+   DockControlBar(&m_wndToolBar);
+   
+   CSize size;
+   CClientDC dc(NULL);
+   HGDIOBJ hOldFont = NULL;
+   HFONT hFont = (HFONT)m_wndStatusBar.SendMessage(WM_GETFONT);
+   if(NULL == hFont)
+   {
+      TRACE0("Failed to get font from status bar");
+      return -1;
+   }
+   hOldFont = dc.SelectObject(hFont);
+   if(NULL == hOldFont)
+   {
+      TRACE0("Failed to get old font from ClientDC");
+      return -1;
+   }
 
-	m_wndStatusBar.SetPaneInfo(1, ID_INDICATOR_CLIP, SBPS_NORMAL, size.cx);
-	m_wndStatusBar.SetPaneText(1, strClip, TRUE);
+   CString strStatusMsg("View is Dirty ");
+   size = dc.GetTextExtent(strStatusMsg);
+   m_wndStatusBar.SetPaneInfo(1, ID_INDICATOR_VIEW_DIRTY, SBPS_NORMAL, size.cx);
 
-	CString strFoV("Field of View       ");
-	{
-		HGDIOBJ hOldFont = NULL;
-		HFONT hFont = (HFONT)m_wndStatusBar.SendMessage(WM_GETFONT);
-		CClientDC dc(NULL);
-		if (hFont != NULL) 
-			hOldFont = dc.SelectObject(hFont);
-		size = dc.GetTextExtent(strFoV);
-		if (hOldFont != NULL) 
-			dc.SelectObject(hOldFont);
-	}
+   strStatusMsg = "Near             Far             ";
+   size = dc.GetTextExtent(strStatusMsg);
+	m_wndStatusBar.SetPaneInfo(2, ID_INDICATOR_CLIP, SBPS_NORMAL, size.cx);
 
-	// Update the pane to reflect the current string
-	m_wndStatusBar.SetPaneInfo(2, ID_INDICATOR_FOV, SBPS_NORMAL, size.cx);
-	m_wndStatusBar.SetPaneText(2, strFoV, TRUE);
+   strStatusMsg = "Field of View       ";
+   size = dc.GetTextExtent(strStatusMsg);
+	m_wndStatusBar.SetPaneInfo(3, ID_INDICATOR_FOV, SBPS_NORMAL, size.cx);
 
-	CString strLookFrom("From                                       ");
-	{
-		HGDIOBJ hOldFont = NULL;
-		HFONT hFont = (HFONT)m_wndStatusBar.SendMessage(WM_GETFONT);
-		CClientDC dc(NULL);
-		if (hFont != NULL) 
-			hOldFont = dc.SelectObject(hFont);
-		size = dc.GetTextExtent(strLookFrom);
-		if (hOldFont != NULL) 
-			dc.SelectObject(hOldFont);
-	}
+   strStatusMsg = "From                                       ";
+   size = dc.GetTextExtent(strStatusMsg);
+	m_wndStatusBar.SetPaneInfo(4, ID_INDICATOR_LOOK_FROM, SBPS_NORMAL, size.cx);
 
-	// Update the pane to reflect the current string
-	m_wndStatusBar.SetPaneInfo(3, ID_INDICATOR_LOOK_FROM, SBPS_NORMAL, size.cx);
-	m_wndStatusBar.SetPaneText(3, strLookFrom, TRUE);
+   strStatusMsg = "At                                       ";
+   size = dc.GetTextExtent(strStatusMsg);
+	m_wndStatusBar.SetPaneInfo(5, ID_INDICATOR_LOOK_AT, SBPS_NORMAL, size.cx);
 
-	CString strLookAt("At                                       ");
-	{
-		HGDIOBJ hOldFont = NULL;
-		HFONT hFont = (HFONT)m_wndStatusBar.SendMessage(WM_GETFONT);
-		CClientDC dc(NULL);
-		if (hFont != NULL) 
-			hOldFont = dc.SelectObject(hFont);
-		size = dc.GetTextExtent(strLookAt);
-		if (hOldFont != NULL) 
-			dc.SelectObject(hOldFont);
-	}
+   dc.SelectObject(hOldFont);
 
-	// Update the pane to reflect the current string
-
-	m_wndStatusBar.SetPaneInfo(4, ID_INDICATOR_LOOK_AT, SBPS_NORMAL, size.cx);
-	m_wndStatusBar.SetPaneText(4, strLookAt, TRUE);
-
-	// TODO: Remove this if you don't want tool tips or a resizeable toolbar
-	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
-		CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
-
-	// TODO: Delete these three lines if you don't want the toolbar to
-	//  be dockable
-	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
-	DockControlBar(&m_wndToolBar);
 	return 0;
 }
 

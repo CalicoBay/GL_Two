@@ -282,8 +282,6 @@ void CGLBox::Draw(GLenum mode)
 	{
 		glColor3ubv(m_color);
 	}
-   glCullFace(GL_BACK);
-   glEnable(GL_CULL_FACE);
    glEnable(GL_NORMALIZE);
 	glPushMatrix();
 		glTranslated(m_pPosition->xyz[0], m_pPosition->xyz[1], m_pPosition->xyz[2]);
@@ -327,7 +325,6 @@ void CGLBox::Draw(GLenum mode)
 		glEnd();
 	glPopMatrix();
 	glDisable(GL_NORMALIZE);
-   glDisable(GL_CULL_FACE);
 }
 
 int CGLBox::Change()
@@ -1352,7 +1349,7 @@ void CGLSphere::Draw(GLenum mode)
 	{
 		glColor3ubv(m_color);
 	}
-	glPushMatrix();
+   glPushMatrix();
 		glTranslated(m_pPosition->xyz[0], m_pPosition->xyz[1], m_pPosition->xyz[2]);
 		if(m_pRotation->xyz[0]!=0)
 			glRotated(m_pRotation->xyz[0], 1, 0, 0);
@@ -1364,11 +1361,10 @@ void CGLSphere::Draw(GLenum mode)
 			glScaled(m_pScale->xyz[0], m_pScale->xyz[1], m_pScale->xyz[2]);
 		GLUquadricObj* quadObj = gluNewQuadric();
 		gluQuadricDrawStyle(quadObj, GLU_FILL);
-        gluQuadricNormals(quadObj, GLU_SMOOTH);
+      gluQuadricNormals(quadObj, GLU_SMOOTH);
 		gluSphere(quadObj, m_radius, 18, 18);
 	glPopMatrix();
-	//glFlush();
-	gluDeleteQuadric(quadObj);
+   gluDeleteQuadric(quadObj);
 }
 
 int CGLSphere::Change()

@@ -32,7 +32,11 @@ BEGIN_MESSAGE_MAP(CGL_TwoView, CView)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_LOOK_FROM, OnUpdateLookFrom)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_LOOK_AT, OnUpdateLookAt)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CLIP, OnUpdateNearFar)
-	//{{AFX_MSG_MAP(CGL_TwoView)
+   ON_UPDATE_COMMAND_UI(ID_VIEW_WIREFRAME, &CGL_TwoView::OnUpdateViewWireframe)
+   ON_UPDATE_COMMAND_UI(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnUpdateViewBlackAndWhite)
+   ON_UPDATE_COMMAND_UI(ID_VIEW_CULLFACES, &CGL_TwoView::OnUpdateViewCullFaces)
+   ON_UPDATE_COMMAND_UI(ID_INDICATOR_VIEW_DIRTY, &CGL_TwoView::OnUpdateViewDirty)
+   //{{AFX_MSG_MAP(CGL_TwoView)
 	ON_COMMAND(ID_EDIT_CLEARALL, OnEditClearall)
 	ON_COMMAND(ID_PRIMITIVES_POLYGONS, OnPrimitivesPolygons)
 	ON_COMMAND(ID_SOLIDS_BOX, OnSolidsBox)
@@ -51,11 +55,10 @@ BEGIN_MESSAGE_MAP(CGL_TwoView, CView)
 	ON_WM_KEYUP()
 	ON_WM_KEYDOWN()
 	ON_COMMAND(ID_HELP_IMPLEMENTATIONINFO, OnHelpImplementationInfo)
-	//}}AFX_MSG_MAP
    ON_COMMAND(ID_VIEW_WIREFRAME, &CGL_TwoView::OnViewWireframe)
-   ON_UPDATE_COMMAND_UI(ID_VIEW_WIREFRAME, &CGL_TwoView::OnUpdateViewWireframe)
    ON_COMMAND(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnViewBlackAndWhite)
-   ON_UPDATE_COMMAND_UI(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnUpdateViewBlackAndWhite)
+   ON_COMMAND(ID_VIEW_CULLFACES, &CGL_TwoView::OnViewCullFaces)
+   //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -68,6 +71,7 @@ CGL_TwoView::CGL_TwoView()
    m_fClearColor[2] = 1.0f;
    m_fClearColor[3] = 1.0f;
    m_bBlackBackground = TRUE;
+   m_bCullFaces = FALSE;
 }
 
 CGL_TwoView::~CGL_TwoView()
@@ -101,6 +105,8 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
    if(FALSE == pView->m_bBlackBackground)
    {
       glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
+      glDisable(GL_LIGHTING);
+      glDisable(GL_LIGHT0);
    }
    else
    {
@@ -115,7 +121,17 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
 	
-   if (pView->m_bDirty)
+   if(pView->m_bCullFaces)
+   {
+      glCullFace(GL_BACK);
+      glEnable(GL_CULL_FACE);
+   }
+   else
+   {
+      glDisable(GL_CULL_FACE);
+   }
+
+   if(pView->m_bDirty)
 	{
       //glDeleteLists((GLuint)pView, 1);//Isn't necessary
       glNewList((GLuint)pView, GL_COMPILE_AND_EXECUTE);
@@ -754,4 +770,47 @@ void CGL_TwoView::OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI)
    {
       pCmdUI->SetText(_T("&Color"));
    }
+}
+
+
+void CGL_TwoView::OnViewCullFaces()
+{
+   if(TRUE == m_bCullFaces)
+   {
+      m_bCullFaces = FALSE;
+   }
+   else
+   {
+      m_bCullFaces = TRUE;
+   }
+
+   m_bDirty = TRUE;
+   AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
+}
+
+
+void CGL_TwoView::OnUpdateViewCullFaces(CCmdUI *pCmdUI)
+{
+   if(TRUE == m_bCullFaces)
+   {
+      pCmdUI->SetText(_T("Show A&ll Faces"));
+   }
+   else
+   {
+      pCmdUI->SetText(_T("Cu&ll Faces"));
+   }
+}
+
+void CGL_TwoView::OnUpdateViewDirty(CCmdUI *pCmdUI)
+{
+   if(TRUE == m_bDirty)
+   {
+      pCmdUI->SetText(_T("View is Dirty"));
+   }
+   else
+   {
+      pCmdUI->SetText(_T("View is Clean"));
+   }
+
+   pCmdUI->Enable(TRUE);
 }

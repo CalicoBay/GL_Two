@@ -113,6 +113,7 @@ BEGIN
         MENUITEM "&Settings",                   ID_VIEW_SETTINGS
         MENUITEM "&Wireframe",                  ID_VIEW_WIREFRAME
         MENUITEM "&Monochrome",                 ID_VIEW_BLACKANDWHITE
+        MENUITEM "Cu&ll Faces",                 ID_VIEW_CULLFACES
     END
     POPUP "&Primitives"
     BEGIN
@@ -427,6 +428,7 @@ BEGIN
     ID_INDICATOR_LOOK_FROM  "Look From"
     ID_INDICATOR_LOOK_AT    "Look At"
     ID_INDICATOR_CLIP       "Near far Clip"
+    ID_INDICATOR_VIEW_DIRTY "View Status"
 END
 
 STRINGTABLE

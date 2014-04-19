@@ -28,7 +28,10 @@ protected: // create from serialization only
 	afx_msg void OnUpdateLookFrom(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateLookAt(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateNearFar(CCmdUI* pCmdUI);
-// Attributes
+   afx_msg void OnUpdateViewWireframe(CCmdUI *pCmdUI);
+   afx_msg void OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI);
+   afx_msg void OnUpdateViewDirty(CCmdUI *pCmdUI);
+   // Attributes
 	BOOL m_bDirty;
 public:
 	//CGL_TwoView();
@@ -78,7 +81,10 @@ protected:
 	afx_msg void OnSolidsTeapot();
 	afx_msg void OnSolidsTorus();
 	afx_msg void OnViewSettings();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+   afx_msg void OnViewWireframe();
+   afx_msg void OnViewBlackAndWhite();
+   afx_msg void OnViewCullFaces();
+   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnDestroy();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -91,14 +97,14 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-   afx_msg void OnViewWireframe();
-   afx_msg void OnUpdateViewWireframe(CCmdUI *pCmdUI);
 protected:
    GLclampf m_fClearColor[4];
    BOOL m_bBlackBackground;
 public:
-   afx_msg void OnViewBlackAndWhite();
-   afx_msg void OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI);
+protected:
+   BOOL m_bCullFaces;
+public:
+   afx_msg void OnUpdateViewCullFaces(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in GL_TwoView.cpp
