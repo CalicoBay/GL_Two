@@ -826,6 +826,7 @@ void CGL_TwoView::OnUpdateViewDirty(CCmdUI *pCmdUI)
 void CGL_TwoView::OnViewCapture()
 {
    CString csFileName;
+   CString csMessage;
    CImage capturedImg;
    CBitmap capturedBitmap;
    CRect clientRect;
@@ -833,13 +834,14 @@ void CGL_TwoView::OnViewCapture()
    GetClientRect(&clientRect);
    int clientWidth = clientRect.Width();
    int clientHeight = clientRect.Height();
+   SIZE_T cbBitMatrix = clientWidth * clientHeight * 3;
    //Lets see if we can use glReadPixels
    LPVOID pVoid = nullptr;
    try
    {
       //glReadPixels works saving to GL_FLOAT
       //pVoid = ::VirtualAlloc(nullptr, (((clientRect.Width() * clientRect.Height() * 3) * GL_FLOAT) + sizeof(BITMAPINFOHEADER)), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-      pVoid = ::VirtualAlloc(nullptr, ((clientRect.Width() * clientRect.Height() * 3) + sizeof(BITMAPINFOHEADER)), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+      pVoid = ::VirtualAlloc(nullptr, (cbBitMatrix + sizeof(BITMAPINFOHEADER)), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
    }
    catch(CMemoryException* e)
    {
@@ -855,7 +857,7 @@ void CGL_TwoView::OnViewCapture()
    pCapturedInfo->bmiHeader.biPlanes = (WORD)1;
    pCapturedInfo->bmiHeader.biBitCount = (WORD)24;
    //pCapturedInfo should be zero'd when allocated
-   LPVOID pBitMatrix = (LPVOID)(pCapturedInfo + 1);
+   LPBYTE pBitMatrix = (LPBYTE)(pCapturedInfo + 1);
 
    DWORD dwLastError = 0;
    ::SetLastError(dwLastError);
@@ -867,13 +869,24 @@ void CGL_TwoView::OnViewCapture()
       //but might have to add some glPixelStorei(GL_PACK_ALIGNMENT, 4) or glPixelMap(...) calls
       glReadPixels(0, 0, clientWidth, clientHeight, GL_RGB, GL_UNSIGNED_BYTE, pBitMatrix);
       wglMakeCurrent(NULL, NULL);
+      //Seems like the Red and Blue components need switching in memory
+      for(SIZE_T i = 0; i < cbBitMatrix; i += 3)
+      {
+         LPBYTE pGL_RED = (pBitMatrix + i);
+         LPBYTE pGL_BLUE = (pBitMatrix + i + 2);
+         BYTE glRed = *pGL_RED;
+         BYTE glBlue = *pGL_BLUE;
+         *pGL_BLUE = glRed;
+         *pGL_RED = glBlue;
+      }
    }
    else
    {
       dwLastError = ::GetLastError();
-      CString csMessage;
+      ::VirtualFree(pVoid, 0, MEM_RELEASE);
       csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
       ::AfxMessageBox(csMessage);
+      return;
    }
    //End lets see if we can use glReadPixels
    if(nullptr != thisApp->m_pImgTemplate)
@@ -921,7 +934,6 @@ void CGL_TwoView::OnViewCapture()
                   else
                   {
                      dwLastError = ::GetLastError();
-                     CString csMessage;
                      csMessage.Format(_T("SetDIBitsToDevice returned 0x%08X"), dwLastError);
                      ::AfxMessageBox(csMessage);
                   }
@@ -929,7 +941,6 @@ void CGL_TwoView::OnViewCapture()
                else
                {
                   dwLastError = ::GetLastError();
-                  CString csMessage;
                   csMessage.Format(_T("CreateCompatibleBitmap returned 0x%08X"), dwLastError);
                   ::AfxMessageBox(csMessage);
                }
@@ -937,7 +948,6 @@ void CGL_TwoView::OnViewCapture()
             else
             {
                dwLastError = ::GetLastError();
-               CString csMessage;
                csMessage.Format(_T("CreateCompatibleDC returned 0x%08X"), dwLastError);
                ::AfxMessageBox(csMessage);
             }
