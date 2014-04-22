@@ -32,7 +32,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CGL_TwoApp construction
 
-CGL_TwoApp::CGL_TwoApp()
+CGL_TwoApp::CGL_TwoApp() : m_pImgTemplate(NULL)
 {
 	for (int i = 0; i < 16; i++)
 		m_pSavedCustomColors[i] =(RGB(255, 255, 255));
@@ -83,6 +83,13 @@ BOOL CGL_TwoApp::InitInstance()
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CGL_TwoView));
 	AddDocTemplate(pDocTemplate);
+
+   //Template for capturing an image of a view
+   m_pImgTemplate = new CMultiDocTemplate(
+   IDR_GL_IMGTYPE,
+   RUNTIME_CLASS(CGL_TwoDoc),
+   RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+   RUNTIME_CLASS(CGL_TwoView));
 
 	// create main MDI Frame window
 	CMainFrame* pMainFrame = new CMainFrame;
@@ -178,6 +185,8 @@ int CGL_TwoApp::ExitInstance()
 		strColorNumber.Format(_T("COLORREF%d"), i);
 		WriteProfileInt(strSection, strColorNumber, m_pSavedCustomColors[i]);
 	}
+
+   if(NULL != m_pImgTemplate) delete m_pImgTemplate;
 	
 	return CWinApp::ExitInstance();
 }

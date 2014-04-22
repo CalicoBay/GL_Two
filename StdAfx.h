@@ -14,6 +14,7 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <afxtempl.h>       // MFC templates
-
+#include <atlimage.h>
+#include <gdiplusimaging.h>
 
 

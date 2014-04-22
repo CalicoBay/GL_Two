@@ -17,6 +17,7 @@ class CGL_TwoApp : public CWinApp
 public:
 	CGL_TwoApp();
 	COLORREF m_pSavedCustomColors[16];
+   CMultiDocTemplate* m_pImgTemplate;
 	
 	// Overrides
 	// ClassWizard generated virtual function overrides

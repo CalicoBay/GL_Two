@@ -19,6 +19,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+DEFINE_GUID(ImageFormatPNG, 0xb96b3caf, 0x0728, 0x11d3, 0x9d, 0x7b, 0x00, 0x00, 0xf8, 0x1e, 0xf3, 0x2e);
+
 
 
 class CGLObjects;
@@ -59,6 +61,7 @@ BEGIN_MESSAGE_MAP(CGL_TwoView, CView)
    ON_COMMAND(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnViewBlackAndWhite)
    ON_COMMAND(ID_VIEW_CULLFACES, &CGL_TwoView::OnViewCullFaces)
    //}}AFX_MSG_MAP
+   ON_COMMAND(ID_VIEW_CAP, &CGL_TwoView::OnViewCapture)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -84,6 +87,9 @@ CGL_TwoView::~CGL_TwoView()
 void CGL_TwoView::OnDraw(CDC* pDC)
 {
 	AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
+   //pDC->SetTextColor(RGB(255, 0, 0));
+   //CString csTextOut(_T("Further Testing OpenGL and GDI Capture"));
+   //pDC->TextOutW(20, 20, csTextOut);
 }
 
 UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
@@ -813,4 +819,130 @@ void CGL_TwoView::OnUpdateViewDirty(CCmdUI *pCmdUI)
    }
 
    pCmdUI->Enable(TRUE);
+}
+
+
+
+void CGL_TwoView::OnViewCapture()
+{
+   CString csFileName;
+   CImage capturedImg;
+   CBitmap capturedBitmap;
+   CRect clientRect;
+   CGL_TwoApp* thisApp = (CGL_TwoApp*)AfxGetApp();
+   GetClientRect(&clientRect);
+   int clientWidth = clientRect.Width();
+   int clientHeight = clientRect.Height();
+   //Lets see if we can use glReadPixels
+   LPVOID pVoid = nullptr;
+   try
+   {
+      //glReadPixels works saving to GL_FLOAT
+      //pVoid = ::VirtualAlloc(nullptr, (((clientRect.Width() * clientRect.Height() * 3) * GL_FLOAT) + sizeof(BITMAPINFOHEADER)), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+      pVoid = ::VirtualAlloc(nullptr, ((clientRect.Width() * clientRect.Height() * 3) + sizeof(BITMAPINFOHEADER)), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+   }
+   catch(CMemoryException* e)
+   {
+      AfxMessageBox(_T("Not enough memory to capture OpenGL area"));
+      e->Delete();
+      return;
+   }
+
+   LPBITMAPINFO pCapturedInfo = (LPBITMAPINFO)pVoid;
+   pCapturedInfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+   pCapturedInfo->bmiHeader.biWidth = (LONG)clientWidth;
+   pCapturedInfo->bmiHeader.biHeight = (LONG)clientHeight;
+   pCapturedInfo->bmiHeader.biPlanes = (WORD)1;
+   pCapturedInfo->bmiHeader.biBitCount = (WORD)24;
+   //pCapturedInfo should be zero'd when allocated
+   LPVOID pBitMatrix = (LPVOID)(pCapturedInfo + 1);
+
+   DWORD dwLastError = 0;
+   ::SetLastError(dwLastError);
+   if(wglMakeCurrent(GetDC()->m_hDC, m_hRC))
+   {
+      //glReadPixels works saving to GL_FLOAT
+      //glReadPixels(0, 0, clientRect.Width(), clientRect.Height(), GL_RGB, GL_FLOAT, pBitMatrix);
+      //glReadPixels works saving to GL_UNSIGNED_BYTE
+      //but might have to add some glPixelStorei(GL_PACK_ALIGNMENT, 4) or glPixelMap(...) calls
+      glReadPixels(0, 0, clientWidth, clientHeight, GL_RGB, GL_UNSIGNED_BYTE, pBitMatrix);
+      wglMakeCurrent(NULL, NULL);
+   }
+   else
+   {
+      dwLastError = ::GetLastError();
+      CString csMessage;
+      csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
+      ::AfxMessageBox(csMessage);
+   }
+   //End lets see if we can use glReadPixels
+   if(nullptr != thisApp->m_pImgTemplate)
+   {
+      BOOL bPromptResult = AfxGetApp()->DoPromptFileName(csFileName, AFX_IDS_APP_TITLE,
+         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST, FALSE, thisApp->m_pImgTemplate);
+      if(bPromptResult)
+      {
+         CDC* pThisCDC = GetDC();
+         if(nullptr != pThisCDC)
+         {
+            CDC dcMemory;
+            dwLastError = 0;
+            ::SetLastError(dwLastError);
+            if(dcMemory.CreateCompatibleDC(pThisCDC))
+            {
+               //From OnDraw
+               //pDC->SetTextColor(RGB(255, 0, 0));
+               //CString csTextOut(_T("Testing OpenGL and GDI capture"));
+               //pDC->TextOutW(20, 20, csTextOut);
+               //End From OnDraw
+               //Misses OpenGL but captures above
+               //if(capturedBitmap.CreateCompatibleBitmap(pThisCDC, clientRect.Width(), clientRect.Height()))
+               //{
+               //   dcMemory.SelectObject(capturedBitmap);
+               //   if(dcMemory.BitBlt(0, 0, clientRect.Width(), clientRect.Height(), pThisCDC, 0, 0, SRCCOPY))
+               //   {
+               //      capturedImg.Attach(capturedBitmap);
+               //      capturedImg.Save(csFileName, ImageFormatPNG);
+               //   }
+               //}
+               //End Misses OpenGL but captures above
+               dwLastError = 0;
+               ::SetLastError(dwLastError);
+               if(capturedBitmap.CreateCompatibleBitmap(pThisCDC, clientWidth, clientHeight))
+               {
+                  dcMemory.SelectObject(capturedBitmap);
+                  dwLastError = 0;
+                  ::SetLastError(dwLastError);
+                  if(::SetDIBitsToDevice(dcMemory.m_hDC, 0, 0, clientWidth, clientHeight, 0, 0, 0, clientHeight, pBitMatrix, pCapturedInfo, DIB_RGB_COLORS))
+                  {
+                     capturedImg.Attach(capturedBitmap);
+                     capturedImg.Save(csFileName, ImageFormatPNG);
+                  }
+                  else
+                  {
+                     dwLastError = ::GetLastError();
+                     CString csMessage;
+                     csMessage.Format(_T("SetDIBitsToDevice returned 0x%08X"), dwLastError);
+                     ::AfxMessageBox(csMessage);
+                  }
+               }
+               else
+               {
+                  dwLastError = ::GetLastError();
+                  CString csMessage;
+                  csMessage.Format(_T("CreateCompatibleBitmap returned 0x%08X"), dwLastError);
+                  ::AfxMessageBox(csMessage);
+               }
+            }
+            else
+            {
+               dwLastError = ::GetLastError();
+               CString csMessage;
+               csMessage.Format(_T("CreateCompatibleDC returned 0x%08X"), dwLastError);
+               ::AfxMessageBox(csMessage);
+            }
+         }
+      }
+   }
+   ::VirtualFree(pVoid, 0, MEM_RELEASE);
 }

@@ -114,6 +114,7 @@ BEGIN
         MENUITEM "&Wireframe",                  ID_VIEW_WIREFRAME
         MENUITEM "&Monochrome",                 ID_VIEW_BLACKANDWHITE
         MENUITEM "Cu&ll Faces",                 ID_VIEW_CULLFACES
+        MENUITEM "Ca&pture",                    ID_VIEW_CAP
     END
     POPUP "&Primitives"
     BEGIN
@@ -429,6 +430,7 @@ BEGIN
     ID_INDICATOR_LOOK_AT    "Look At"
     ID_INDICATOR_CLIP       "Near far Clip"
     ID_INDICATOR_VIEW_DIRTY "View Status"
+    IDR_GL_IMGTYPE          "\nGL_Two\nGL_Two\nGL_Two Files (*.png)\n.png\nGLTwo.Capture\nGL_Two Capture"
 END
 
 STRINGTABLE

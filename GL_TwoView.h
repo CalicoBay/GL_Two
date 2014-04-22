@@ -105,6 +105,7 @@ protected:
    BOOL m_bCullFaces;
 public:
    afx_msg void OnUpdateViewCullFaces(CCmdUI *pCmdUI);
+   afx_msg void OnViewCapture();
 };
 
 #ifndef _DEBUG  // debug version in GL_TwoView.cpp

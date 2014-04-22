@@ -113,3 +113,11 @@ void CGL_TwoDoc::RemoveAll()
 	m_objects.RemoveAll();
 	SetModifiedFlag();
 }
+
+
+//BOOL CGL_TwoDoc::OnSaveDocument(LPCTSTR lpszPathName)
+//{
+//   BOOL bReturn = CDocument::OnSaveDocument(lpszPathName);
+//
+//   return bReturn;
+//}

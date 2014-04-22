@@ -28,7 +28,8 @@ public:
 	public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
-	//}}AFX_VIRTUAL
+   //virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
+   //}}AFX_VIRTUAL
 
 // Implementation
 public:

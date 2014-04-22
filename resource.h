@@ -18,6 +18,7 @@
 #define IDD_POLYGON                     134
 #define ID_INDICATOR_VIEW_DIRTY         134
 #define IDD_COMP_DLG                    135
+#define IDR_GL_IMGTYPE                  135
 #define IDB_BITMAP1                     136
 #define IDD_SELECTION                   138
 #define IDD_REPEAT_DIALOG               139
@@ -127,6 +128,7 @@
 #define ID_VIEW_WIREFRAME               32793
 #define ID_VIEW_BLACKANDWHITE           32794
 #define ID_VIEW_CULLFACES               32795
+#define ID_VIEW_CAP                     32796
 
 // Next default values for new objects
 // 
@@ -134,7 +136,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32796
+#define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
