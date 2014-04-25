@@ -37,7 +37,8 @@ public:
 	//CGL_TwoView();
 	CGL_TwoDoc* GetDocument();
 	static UINT ThreadDraw(LPVOID pParam);
-	static UINT ThreadObjectDraw(LPVOID pParam);
+   static UINT ThreadAnimatedDraw(LPVOID pParam);
+   static UINT ThreadObjectDraw(LPVOID pParam);
 protected:
 	CString  m_strWndClass;
 	HGLRC    m_hRC;
@@ -94,18 +95,16 @@ protected:
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnHelpImplementationInfo();
-	//}}AFX_MSG
+   afx_msg void OnUpdateViewCullFaces(CCmdUI *pCmdUI);
+   afx_msg void OnViewCapture();
+   afx_msg void OnViewAnimate();
+   //}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-public:
 protected:
    GLclampf m_fClearColor[4];
    BOOL m_bBlackBackground;
-public:
 protected:
    BOOL m_bCullFaces;
-public:
-   afx_msg void OnUpdateViewCullFaces(CCmdUI *pCmdUI);
-   afx_msg void OnViewCapture();
 };
 
 #ifndef _DEBUG  // debug version in GL_TwoView.cpp

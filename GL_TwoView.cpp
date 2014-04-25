@@ -60,8 +60,9 @@ BEGIN_MESSAGE_MAP(CGL_TwoView, CView)
    ON_COMMAND(ID_VIEW_WIREFRAME, &CGL_TwoView::OnViewWireframe)
    ON_COMMAND(ID_VIEW_BLACKANDWHITE, &CGL_TwoView::OnViewBlackAndWhite)
    ON_COMMAND(ID_VIEW_CULLFACES, &CGL_TwoView::OnViewCullFaces)
-   //}}AFX_MSG_MAP
    ON_COMMAND(ID_VIEW_CAP, &CGL_TwoView::OnViewCapture)
+   ON_COMMAND(ID_VIEW_ANIMATE, &CGL_TwoView::OnViewAnimate)
+   //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -95,64 +96,153 @@ void CGL_TwoView::OnDraw(CDC* pDC)
 UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
 {
 	CGL_TwoView* pView = (CGL_TwoView*)pParam;
-    if(NULL == pView || !pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView)))
+   if(NULL == pView || !pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView)))
 	{
 		AfxMessageBox(_T("CGL_TwoView::ThreadDraw returned 0"));
 		return 0;	// illegal parameter
 	}
 
-	wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC);	
-	
-   GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
-	pView->ChangeCamera();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-   
-   if(FALSE == pView->m_bBlackBackground)
+   CString csMessage;
+   DWORD dwLastError = 0UL;
+   ::SetLastError(dwLastError);
+   if(wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
    {
-      glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
-      glDisable(GL_LIGHTING);
-      glDisable(GL_LIGHT0);
+      GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
+      pView->ChangeCamera();
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+
+      if(FALSE == pView->m_bBlackBackground)
+      {
+         glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
+         glDisable(GL_LIGHTING);
+         glDisable(GL_LIGHT0);
+      }
+      else
+      {
+         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+         glEnable(GL_COLOR_MATERIAL);
+         glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
+         glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
+         glEnable(GL_LIGHTING);
+         glEnable(GL_LIGHT0);
+      }
+
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+      glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
+
+      if(pView->m_bCullFaces)
+      {
+         glCullFace(GL_BACK);
+         glEnable(GL_CULL_FACE);
+      }
+      else
+      {
+         glDisable(GL_CULL_FACE);
+      }
+
+      if(pView->m_bDirty)
+      {
+         glNewList((GLuint)pView, GL_COMPILE_AND_EXECUTE);
+         pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
+         glEndList();
+         pView->m_bDirty = FALSE;
+      }
+      else
+      {
+         glCallList((GLuint)pView);
+      }
+
+      wglMakeCurrent(NULL, NULL);
    }
    else
    {
-      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-      glEnable(GL_COLOR_MATERIAL);
-      glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
-      glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
-      glEnable(GL_LIGHTING);
-      glEnable(GL_LIGHT0);
+      dwLastError = ::GetLastError();
+      csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
+      ::AfxMessageBox(csMessage);
+      return 0;
    }
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
-	
-   if(pView->m_bCullFaces)
-   {
-      glCullFace(GL_BACK);
-      glEnable(GL_CULL_FACE);
-   }
-   else
-   {
-      glDisable(GL_CULL_FACE);
-   }
-
-   if(pView->m_bDirty)
-	{
-      //glDeleteLists((GLuint)pView, 1);//Isn't necessary
-      glNewList((GLuint)pView, GL_COMPILE_AND_EXECUTE);
-      pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
-		glEndList();
-		pView->m_bDirty = FALSE;
-	}
-   else
-   {
-      glCallList((GLuint)pView);
-   }
-
-	wglMakeCurrent(NULL, NULL);
-	return 1;
+   return 1;
 }
+
+UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
+{
+   CGL_TwoView* pView = (CGL_TwoView*)pParam;
+   if(NULL == pView || !pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView)))
+   {
+      AfxMessageBox(_T("CGL_TwoView::ThreadDraw returned 0"));
+      return 0;	// illegal parameter
+   }
+
+   DWORD dwLastError = 0UL;
+   ::SetLastError(dwLastError);
+   if(wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
+   {
+      GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+
+      if(FALSE == pView->m_bBlackBackground)
+      {
+         glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
+         glDisable(GL_LIGHTING);
+         glDisable(GL_LIGHT0);
+      }
+      else
+      {
+         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+         glEnable(GL_COLOR_MATERIAL);
+         glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
+         glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
+         glEnable(GL_LIGHTING);
+         glEnable(GL_LIGHT0);
+      }
+
+     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+      glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
+
+      if(pView->m_bCullFaces)
+      {
+         glCullFace(GL_BACK);
+         glEnable(GL_CULL_FACE);
+      }
+      else
+      {
+         glDisable(GL_CULL_FACE);
+      }
+
+      if(pView->m_bDirty)
+      {
+         glNewList((GLuint)pView, GL_COMPILE);
+         pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
+         glEndList();
+         pView->m_bDirty = FALSE;
+      }
+
+      for(GLfloat azimuth = 0.0; azimuth < 360.0; azimuth += 0.100f)
+      {
+         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+         glRotatef(azimuth, 0.0, 1.0, 0.0);
+         glCallList((GLuint)pView);
+         glFlush();
+         ::Sleep(10);
+         glLoadIdentity();
+      }
+
+      wglMakeCurrent(NULL, NULL);
+   }
+   else
+   {
+      dwLastError = ::GetLastError();
+      CString csMessage;
+      csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
+      ::AfxMessageBox(csMessage);
+      return 0;
+   }
+
+   return 1;
+}
+
 UINT CGL_TwoView::ThreadObjectDraw(LPVOID pParam)
 {
 	if(NULL == pParam)
@@ -162,11 +252,12 @@ UINT CGL_TwoView::ThreadObjectDraw(LPVOID pParam)
    }
 
    PDRAWPARAMETERS pDrawParams = (PDRAWPARAMETERS)pParam;
-   if((NULL == pDrawParams->pView) || (!pDrawParams->pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView))))
+   if((nullptr == pDrawParams->pGLObject) || (NULL == pDrawParams->pView) || (!pDrawParams->pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView))))
 	{
 		AfxMessageBox(_T("Thread returned 0"));
 		return 0;	// illegal parameter
 	}
+
 	wglMakeCurrent(pDrawParams->pView->GetDC()->m_hDC, pDrawParams->pView->m_hRC);
 	pDrawParams->pGLObject->Draw(GL_RENDER);//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
 	wglMakeCurrent(NULL, NULL);
@@ -389,8 +480,8 @@ void CGL_TwoView::OnSolidsTorus()
 
 void CGL_TwoView::OnDestroy() 
 {
-	CView::OnDestroy();
-	wglDeleteContext(m_hRC);
+   wglDeleteContext(m_hRC);
+   CView::OnDestroy();
 }
 
 void CGL_TwoView::OnSize(UINT nType, int cx, int cy) 
@@ -441,13 +532,12 @@ void CGL_TwoView::ChangeCamera()
 {
 	CRect clientRect;
 	GetClientRect(&clientRect);
-    glEnable(GL_DEPTH_TEST);
+   glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(m_nField_of_View, m_nAspect, m_nNear, m_nFar);
 	glViewport(0, 0, clientRect.right, clientRect.bottom);
-	gluLookAt(m_nEyeX, m_nEyeY, m_nEyeZ, m_nCenterX, m_nCenterY, 
-									m_nCenterZ,m_nUpX,m_nUpY,m_nUpZ);
+	gluLookAt(m_nEyeX, m_nEyeY, m_nEyeZ, m_nCenterX, m_nCenterY, m_nCenterZ, m_nUpX, m_nUpY, m_nUpZ);
 }
 
 
@@ -867,6 +957,7 @@ void CGL_TwoView::OnViewCapture()
       //glReadPixels(0, 0, clientRect.Width(), clientRect.Height(), GL_RGB, GL_FLOAT, pBitMatrix);
       //glReadPixels works saving to GL_UNSIGNED_BYTE
       //but might have to add some glPixelStorei(GL_PACK_ALIGNMENT, 4) or glPixelMap(...) calls
+      //glPixelStorei(GL_PACK_SWAP_BYTES, GL_TRUE);//Doesn't swap GL_RGB
       glReadPixels(0, 0, clientWidth, clientHeight, GL_RGB, GL_UNSIGNED_BYTE, pBitMatrix);
       wglMakeCurrent(NULL, NULL);
       //Seems like the Red and Blue components need switching in memory
@@ -923,20 +1014,28 @@ void CGL_TwoView::OnViewCapture()
                ::SetLastError(dwLastError);
                if(capturedBitmap.CreateCompatibleBitmap(pThisCDC, clientWidth, clientHeight))
                {
-                  dcMemory.SelectObject(capturedBitmap);
-                  dwLastError = 0;
-                  ::SetLastError(dwLastError);
-                  if(::SetDIBitsToDevice(dcMemory.m_hDC, 0, 0, clientWidth, clientHeight, 0, 0, 0, clientHeight, pBitMatrix, pCapturedInfo, DIB_RGB_COLORS))
+                  HGDIOBJ hOrigBitMap = dcMemory.SelectObject(capturedBitmap);
+                  if(nullptr != hOrigBitMap)
                   {
-                     capturedImg.Attach(capturedBitmap);
-                     capturedImg.Save(csFileName, ImageFormatPNG);
+                     dwLastError = 0;
+                     ::SetLastError(dwLastError);
+                     if(::SetDIBitsToDevice(dcMemory.m_hDC, 0, 0, clientWidth, clientHeight, 0, 0, 0, clientHeight, pBitMatrix, pCapturedInfo, DIB_RGB_COLORS))
+                     {
+                        capturedImg.Attach(capturedBitmap);
+                        capturedImg.Save(csFileName, ImageFormatPNG);
+                        capturedImg.Detach();
+                     }
+                     else
+                     {
+                        dwLastError = ::GetLastError();
+                        csMessage.Format(_T("SetDIBitsToDevice returned 0x%08X"), dwLastError);
+                        ::AfxMessageBox(csMessage);
+                     }
+
+                     dcMemory.SelectObject(hOrigBitMap);
                   }
-                  else
-                  {
-                     dwLastError = ::GetLastError();
-                     csMessage.Format(_T("SetDIBitsToDevice returned 0x%08X"), dwLastError);
-                     ::AfxMessageBox(csMessage);
-                  }
+
+                  capturedBitmap.DeleteObject();
                }
                else
                {
@@ -944,6 +1043,8 @@ void CGL_TwoView::OnViewCapture()
                   csMessage.Format(_T("CreateCompatibleBitmap returned 0x%08X"), dwLastError);
                   ::AfxMessageBox(csMessage);
                }
+
+               dcMemory.DeleteDC();
             }
             else
             {
@@ -955,4 +1056,10 @@ void CGL_TwoView::OnViewCapture()
       }
    }
    ::VirtualFree(pVoid, 0, MEM_RELEASE);
+}
+
+
+void CGL_TwoView::OnViewAnimate()
+{
+   AfxBeginThread(CGL_TwoView::ThreadAnimatedDraw, (LPVOID)this);
 }

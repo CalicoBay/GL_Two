@@ -115,6 +115,7 @@ BEGIN
         MENUITEM "&Monochrome",                 ID_VIEW_BLACKANDWHITE
         MENUITEM "Cu&ll Faces",                 ID_VIEW_CULLFACES
         MENUITEM "Ca&pture",                    ID_VIEW_CAP
+        MENUITEM "&Animate",                    ID_VIEW_ANIMATE
     END
     POPUP "&Primitives"
     BEGIN
