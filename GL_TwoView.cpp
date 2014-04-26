@@ -243,6 +243,118 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
    return 1;
 }
 
+//UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
+//{
+//   //Alternate to test capturing!!
+//   CGL_TwoView* pView = (CGL_TwoView*)pParam;
+//   if(NULL == pView || !pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView)))
+//   {
+//      AfxMessageBox(_T("CGL_TwoView::ThreadDraw returned 0"));
+//      return 0;	// illegal parameter
+//   }
+//
+//   CString csFileName;
+//   CGL_TwoApp* thisApp = (CGL_TwoApp*)AfxGetApp();
+//   CImage capturedImg;
+//   CBitmap capturedBitmap;
+//   CRect clientRect;
+//   CDC* pThisCDC = pView->GetDC();
+//   CDC dcMemory;
+//   pView->GetClientRect(&clientRect);
+//   int clientWidth = clientRect.Width();
+//   int clientHeight = clientRect.Height();
+//   if(dcMemory.CreateCompatibleDC(pThisCDC))
+//   {
+//      //if(capturedBitmap.CreateCompatibleBitmap(&dcMemory, clientRect.Width(), clientRect.Height()))
+//      //{
+//      //   pThisCDC->SelectObject(capturedBitmap);
+//      //}
+//   }
+//   PIXELFORMATDESCRIPTOR pfd =
+//   {
+//      sizeof(PIXELFORMATDESCRIPTOR),	// Structure size
+//      1,								// Structure version number
+//      PFD_DRAW_TO_WINDOW |			// Property flags
+//      PFD_SUPPORT_OPENGL, PFD_TYPE_RGBA,
+//      24,								// True color
+//      0, 0, 0, 0, 0, 0,				// Not concerned with these
+//      0, 0, 0, 0, 0, 0, 0,			// No alpha or accum buffer
+//      32,								// 32-bit depth buffer
+//      0, 0,							// No stencil or aux buffer
+//      PFD_MAIN_PLANE,					// Main layer type
+//      0,								// Reserved
+//      0, 0, 0,						// Unsupported
+//   };
+//
+//   int pixelFormat = ChoosePixelFormat(dcMemory, &pfd);
+//   BOOL success = SetPixelFormat(dcMemory, pixelFormat, &pfd);
+//   if(!success)
+//   {
+//      AfxMessageBox(_T("No success setting pixel format"));
+//      return 1;
+//   }
+//   HGLRC hRC = wglCreateContext(dcMemory);
+//
+//   DWORD dwLastError = 0UL;
+//   ::SetLastError(dwLastError);
+//   if(wglMakeCurrent(dcMemory, hRC))
+//   {
+//      GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
+//      glMatrixMode(GL_MODELVIEW);
+//      glLoadIdentity();
+//
+//      if(FALSE == pView->m_bBlackBackground)
+//      {
+//         glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
+//         glDisable(GL_LIGHTING);
+//         glDisable(GL_LIGHT0);
+//      }
+//      else
+//      {
+//         glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+//         glEnable(GL_COLOR_MATERIAL);
+//         glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
+//         glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
+//         glEnable(GL_LIGHTING);
+//         glEnable(GL_LIGHT0);
+//      }
+//
+//      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+//      glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
+//
+//      if(pView->m_bCullFaces)
+//      {
+//         glCullFace(GL_BACK);
+//         glEnable(GL_CULL_FACE);
+//      }
+//      else
+//      {
+//         glDisable(GL_CULL_FACE);
+//      }
+//
+//      glCallList((GLuint)pView);
+//
+//      BOOL bPromptResult = AfxGetApp()->DoPromptFileName(csFileName, AFX_IDS_APP_TITLE,
+//         OFN_HIDEREADONLY | OFN_PATHMUSTEXIST, FALSE, thisApp->m_pImgTemplate);
+//      if(bPromptResult)
+//      {
+//         capturedImg.Attach(capturedBitmap);
+//         capturedImg.Save(csFileName, ImageFormatPNG);
+//      }
+//      wglMakeCurrent(NULL, NULL);
+//   }
+//   else
+//   {
+//      dwLastError = ::GetLastError();
+//      CString csMessage;
+//      csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
+//      ::AfxMessageBox(csMessage);
+//      return 0;
+//   }
+//   wglDeleteContext(hRC);
+//   return 1;
+//}
+
 UINT CGL_TwoView::ThreadObjectDraw(LPVOID pParam)
 {
 	if(NULL == pParam)
@@ -579,7 +691,7 @@ int CGL_TwoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-		PIXELFORMATDESCRIPTOR pfd = 
+	PIXELFORMATDESCRIPTOR pfd = 
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),	// Structure size
 		1,								// Structure version number
@@ -595,10 +707,8 @@ int CGL_TwoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		0, 0, 0,						// Unsupported
 	};
 
-	int pixelFormat =
-		ChoosePixelFormat(GetDC()->m_hDC, &pfd);
-	BOOL success =
-		SetPixelFormat(GetDC()->m_hDC, pixelFormat, &pfd);
+	int pixelFormat = ChoosePixelFormat(GetDC()->m_hDC, &pfd);
+	BOOL success = SetPixelFormat(GetDC()->m_hDC, pixelFormat, &pfd);
 	if(!success)
 	{
 		AfxMessageBox(_T("No success setting pixel format"));
