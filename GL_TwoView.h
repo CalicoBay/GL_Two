@@ -33,9 +33,11 @@ protected: // create from serialization only
    afx_msg void OnUpdateViewDirty(CCmdUI *pCmdUI);
    // Attributes
 	BOOL m_bDirty;
+   BOOL m_bActive;
 public:
 	//CGL_TwoView();
 	CGL_TwoDoc* GetDocument();
+   CWinThread* m_pDrawThread;
 	static UINT ThreadDraw(LPVOID pParam);
    static UINT ThreadAnimatedDraw(LPVOID pParam);
    static UINT ThreadObjectDraw(LPVOID pParam);
