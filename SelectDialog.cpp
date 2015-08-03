@@ -51,7 +51,7 @@ void CSelectDialog::OnDeleteButton()
 {
 	int n_sel = m_HitList.GetCurSel();
 	CGLObjects* pObject = (CGLObjects*)m_HitList.GetItemDataPtr(n_sel);
-	if ((pObject == NULL)||((int)pObject == -1))
+	if ((pObject == NULL)||((INT_PTR)pObject == -1))
 		return;
 	CDrawObjList* docList = m_pView->GetDocument()->GetObjects();
 	POSITION posToRemove = docList->Find(pObject);
@@ -65,7 +65,7 @@ void CSelectDialog::OnDblclkHitList()
 {
 	int n_Selection = m_HitList.GetCurSel();
 	CGLObjects* pObject = (CGLObjects*)m_HitList.GetItemDataPtr(n_Selection);
-	if ((pObject == NULL)||((int)pObject == -1))
+	if ((pObject == NULL)||((INT_PTR)pObject == -1))
 		return;
 	if (pObject->Change())
 	{
@@ -96,7 +96,7 @@ BOOL CSelectDialog::OnInitDialog()
 void CSelectDialog::OnRepeatBtn() 
 {
 	CGLObjects* pObject = (CGLObjects*)m_HitList.GetItemDataPtr(m_HitList.GetCurSel());
-	if ((pObject == NULL)||((int)pObject == -1))
+	if ((pObject == NULL)||((INT_PTR)pObject == -1))
 		return;
 	CRepeatDialog dlg;
 	INT_PTR response = dlg.DoModal();
