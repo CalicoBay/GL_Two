@@ -207,9 +207,11 @@ void CCompositeDlg::OnDblclkObjList()
 
 void CCompositeDlg::OnImport() 
 {
+#ifdef _DEBUG
 	CString message;
 	message.Format(_T("CompositeDlg pointer is %X"), (INT_PTR)this);
 	AfxMessageBox(message);
+#endif
 	CObjTreeDlg dlg(this, m_pCompObj);
 	dlg.DoModal();
 }
