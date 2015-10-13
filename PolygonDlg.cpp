@@ -73,7 +73,7 @@ BEGIN_MESSAGE_MAP(CPolygonDlg, CDialog)
 	ON_BN_CLICKED(IDC_COLOR, OnColor)
 	ON_BN_CLICKED(IDOK, OnOK)
 	//}}AFX_MSG_MAP
-	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CPolygonDlg::OnLvnItemchangedList1)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_VERTICES, &CPolygonDlg::OnLvnItemchangedVertices)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -221,16 +221,32 @@ void CPolygonDlg::OnColor()
 
 
 
-void CPolygonDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
+void CPolygonDlg::OnLvnItemchangedVertices(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: Add your control notification handler code here
+	// LVN_ITEMCHANGED notification 0xFFFFFF9B (LVN_FIRST - 1)
+	INT iItem = pNMLV->iItem;
+	if (-1 < iItem)
+	{
+		if (iItem < m_num_vertices)
+		{
+			if (iItem != m_show_which_vertex)
+			{
+				m_show_which_vertex = iItem;
+				m_x = m_array[iItem][0];
+				m_y = m_array[iItem][1];
+				m_z = m_array[iItem][2];
+				UpdateData(FALSE);
+			}
+		}
+	}
 	*pResult = 0;
 }
 
 
 BOOL CPolygonDlg::OnInitDialog()
 {
+	CString sValue;
 	CDialog::OnInitDialog();
 
 	m_listVertices.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
@@ -239,6 +255,20 @@ BOOL CPolygonDlg::OnInitDialog()
 	m_listVertices.InsertColumn(2, _T("Y"), LVCFMT_LEFT, 100);
 	m_listVertices.InsertColumn(3, _T("Z"), LVCFMT_LEFT, 100);
 	m_listVertices.InsertColumn(4, _T("Normal"), LVCFMT_LEFT, 100);
+
+	for (byte i = 0; i < m_num_vertices; ++i)
+	{
+		sValue.Format(_T("%d"), i);
+		m_listVertices.InsertItem(i, sValue);
+
+		sValue.Format(_T("%f"), m_array[i][0]);
+		m_listVertices.SetItemText(i, 1, sValue);
+		sValue.Format(_T("%f"), m_array[i][1]);
+		m_listVertices.SetItemText(i, 2, sValue);
+		sValue.Format(_T("%f"), m_array[i][2]);
+		m_listVertices.SetItemText(i, 3, sValue);
+	}
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

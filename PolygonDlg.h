@@ -56,6 +56,6 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnLvnItemchangedVertices(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL OnInitDialog();
 };
