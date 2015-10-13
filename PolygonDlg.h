@@ -28,7 +28,9 @@ public:
 	//}}AFX_DATA
 	double m_array[256][3];
 	BYTE m_byteColorArray[3];
-
+// Information
+protected:
+	CMFCListCtrl m_listVertices;
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPolygonDlg)
@@ -53,4 +55,7 @@ protected:
 	afx_msg void OnColor();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
+	virtual BOOL OnInitDialog();
 };

@@ -48,6 +48,7 @@ void CPolygonDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DOUBLEX, m_editX);
 	DDX_Control(pDX, IDC_EDIT5, m_editVertex);
 	DDX_Control(pDX, IDC_CONVEX, m_Convex_ctrl);
+	DDX_Control(pDX, IDC_VERTICES, m_listVertices);
 	DDX_Text(pDX, IDC_DOUBLEX, m_x);
 	DDX_Text(pDX, IDC_DOUBLEY, m_y);
 	DDX_Text(pDX, IDC_DOUBLEZ, m_z);
@@ -65,13 +66,14 @@ BEGIN_MESSAGE_MAP(CPolygonDlg, CDialog)
 	ON_BN_CLICKED(IDC_PREVIOUS, OnPrevious)
 	ON_BN_CLICKED(IDC_CONVEX, OnConvex)
 	ON_EN_CHANGE(IDC_EDIT5, OnChangeVertex)
-	ON_EN_CHANGE(IDC_DOUBLEX, OnChangeDoublex)
-	ON_EN_CHANGE(IDC_DOUBLEY, OnChangeDoubley)
-	ON_EN_CHANGE(IDC_DOUBLEZ, OnChangeDoublez)
+	//ON_EN_CHANGE(IDC_DOUBLEX, OnChangeDoublex)
+	//ON_EN_CHANGE(IDC_DOUBLEY, OnChangeDoubley)
+	//ON_EN_CHANGE(IDC_DOUBLEZ, OnChangeDoublez)
 	ON_EN_CHANGE(IDC_POINTS, OnChangePoints)
 	ON_BN_CLICKED(IDC_COLOR, OnColor)
 	ON_BN_CLICKED(IDOK, OnOK)
 	//}}AFX_MSG_MAP
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CPolygonDlg::OnLvnItemchangedList1)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -81,10 +83,27 @@ void CPolygonDlg::OnNext()
 {
 	if (m_show_which_vertex < m_num_vertices)
 	{
+		CString sValue;
 		UpdateData(TRUE);
 		m_array[m_show_which_vertex][0] = m_x;
 		m_array[m_show_which_vertex][1] = m_y;
 		m_array[m_show_which_vertex][2] = m_z;
+		sValue.Format(_T("%d"), m_show_which_vertex);
+		LVFINDINFO FindInfo = { 0 };
+		FindInfo.flags = LVFI_STRING;
+		FindInfo.psz = sValue;
+		int iFound = m_listVertices.FindItem(&FindInfo);
+		if (-1 == iFound)
+		{
+			m_listVertices.InsertItem(m_show_which_vertex, sValue);
+		}
+		sValue.Format(_T("%f"), m_x);
+		m_listVertices.SetItemText(m_show_which_vertex, 1, sValue);
+		sValue.Format(_T("%f"), m_y);
+		m_listVertices.SetItemText(m_show_which_vertex, 2, sValue);
+		sValue.Format(_T("%f"), m_z);
+		m_listVertices.SetItemText(m_show_which_vertex, 3, sValue);
+
 		m_show_which_vertex++;
 		if (m_show_which_vertex == m_num_vertices)
 		{
@@ -200,3 +219,26 @@ void CPolygonDlg::OnColor()
 	}
 }
 
+
+
+void CPolygonDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+}
+
+
+BOOL CPolygonDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	m_listVertices.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	m_listVertices.InsertColumn(0, _T("Vertex"), LVCFMT_LEFT, 50);
+	m_listVertices.InsertColumn(1, _T("X"), LVCFMT_LEFT, 100);
+	m_listVertices.InsertColumn(2, _T("Y"), LVCFMT_LEFT, 100);
+	m_listVertices.InsertColumn(3, _T("Z"), LVCFMT_LEFT, 100);
+	m_listVertices.InsertColumn(4, _T("Normal"), LVCFMT_LEFT, 100);
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return FALSE
+}
