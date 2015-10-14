@@ -31,6 +31,7 @@ public:
 // Information
 protected:
 	CMFCListCtrl m_listVertices;
+	CString m_sValue;
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPolygonDlg)
@@ -58,4 +59,7 @@ protected:
 public:
 	afx_msg void OnLvnItemchangedVertices(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL OnInitDialog();
+	afx_msg void OnKillFocusDoubleX();
+	afx_msg void OnKillFocusDoubleY();
+	afx_msg void OnKillFocusDoubleZ();
 };
