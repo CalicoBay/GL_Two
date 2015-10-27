@@ -43,7 +43,7 @@ public:
 	//void SetIsThisClipped(BOOL t_or_f=TRUE)	  {m_bIsThisClipped=t_or_f;}
 	void SetDefaultColorBit(BOOL t_or_f=TRUE) {m_bColorWasDifferent=t_or_f;}
 	GLubyte* GetColor()		                  {return m_color;}
-	GLint    GetInt()			              {return (GLint)this;}
+	UINT_PTR GetInt()			              {return (UINT_PTR)this;}
 	CString  GetDescriptor()				  {return m_strDescriptor;}
 	BOOL     GetIsComposite()				  {return m_bComposite;}
 	BOOL	 GetIsColorDifferent()			  {return m_bColorIsDifferent;}

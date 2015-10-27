@@ -192,7 +192,7 @@ void CCompositeDlg::OnDblclkObjList()
 		return;
 	CGLObjects* pObj = 
 		(CGLObjects*)m_ObjectList.GetItemDataPtr(n_Selection);
-	if ((pObj == NULL)||((int)pObj == -1))
+	if ((pObj == NULL)||((INT_PTR)pObj == -1))
 		AfxMessageBox(_T("Object not found in Composite Map."));
 	else
 	{
@@ -222,7 +222,7 @@ void CCompositeDlg::OnCopy()
 	if (n_Selection == LB_ERR)
 		return;
 	CGLObjects* pObject = (CGLObjects*)m_ObjectList.GetItemDataPtr(n_Selection);
-	if ((pObject == NULL)||((int)pObject == -1))
+	if ((pObject == NULL)||((INT_PTR)pObject == -1))
 		return;
 	CRepeatDialog dlg;
 	INT_PTR response = dlg.DoModal();
@@ -265,7 +265,7 @@ int CCompositeDlg::OnVKeyToItem(UINT nKey, CListBox* pListBox, UINT nIndex)
 		if (response == IDNO)
 			return -2;
 		CGLObjects* pObject = (CGLObjects*)m_ObjectList.GetItemDataPtr(n_Sel);
-		if ((pObject == NULL)||((int)pObject == -1))
+		if ((pObject == NULL)||((INT_PTR)pObject == -1))
 		{
 			m_ObjectList.DeleteString(n_Sel);
 			return -2;

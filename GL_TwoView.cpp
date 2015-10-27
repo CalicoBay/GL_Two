@@ -83,6 +83,9 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr)
       m_pDrawThread->m_bAutoDelete = FALSE;
       m_pDrawThread->CreateThread(CREATE_SUSPENDED);
    }
+   ULARGE_INTEGER uli = { 0 };
+   uli.QuadPart = (ULONGLONG)this;
+   m_RefForList = uli.LowPart;
 }
 
 CGL_TwoView::~CGL_TwoView()
@@ -157,14 +160,14 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
 
          if(pView->m_bDirty)
          {
-            glNewList((GLuint)pView, GL_COMPILE_AND_EXECUTE);
+            glNewList(pView->m_RefForList, GL_COMPILE_AND_EXECUTE);
             pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
             glEndList();
             pView->m_bDirty = FALSE;
          }
          else
          {
-            glCallList((GLuint)pView);
+            glCallList(pView->m_RefForList);
          }
 
          wglMakeCurrent(NULL, NULL);
@@ -226,7 +229,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
 
       if(pView->m_bDirty)
       {
-         glNewList((GLuint)pView, GL_COMPILE);
+         glNewList(pView->m_RefForList, GL_COMPILE_AND_EXECUTE);
          pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
          glEndList();
          pView->m_bDirty = FALSE;
@@ -236,7 +239,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
       {
          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
          glRotatef(azimuth, 0.0, 1.0, 0.0);
-         glCallList((GLuint)pView);
+         glCallList(pView->m_RefForList);
          glFlush();
          ::Sleep(10);
          glLoadIdentity();

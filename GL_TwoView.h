@@ -49,6 +49,7 @@ protected:
 	GLdouble m_nEyeX, m_nEyeY, m_nEyeZ;
 	GLdouble m_nCenterX, m_nCenterY, m_nCenterZ;
 	GLdouble m_nUpX, m_nUpY, m_nUpZ;
+   GLuint m_RefForList;
 
 // Operations
 // Overrides
