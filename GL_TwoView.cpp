@@ -229,7 +229,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
 
       if(pView->m_bDirty)
       {
-         glNewList(pView->m_RefForList, GL_COMPILE_AND_EXECUTE);
+         glNewList(pView->m_RefForList, GL_COMPILE);
          pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
          glEndList();
          pView->m_bDirty = FALSE;
