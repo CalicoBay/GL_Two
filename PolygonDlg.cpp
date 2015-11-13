@@ -10,7 +10,9 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
+extern void VecSub(double A[3], double B[3], double C[3]);
+extern void VecCross(double A[3], double B[3], double C[3]);
+extern BOOL VecNormalize(double A[3]);
 /////////////////////////////////////////////////////////////////////////////
 // CPolygonDlg dialog
 
@@ -19,20 +21,37 @@ CPolygonDlg::CPolygonDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CPolygonDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CPolygonDlg)
-	m_x = 0.0;
-	m_y = 0.0;
-	m_z = 0.0;
 	m_show_which_vertex = 0;
 	m_num_vertices = 3;
 	m_bConvex = TRUE;
 	//}}AFX_DATA_INIT
-	for (int i = 0; i < 256; i++)
-	{
-		m_array[i][0] = 0;
-		m_array[i][1] = 0;
-		m_array[i][2] = 0;
-	}
-	m_byteColorArray[0] = 255;
+	//for (int i = 0; i < 256; i++)
+	//{
+	//	m_array[i][0] = 0;
+	//	m_array[i][1] = 0;
+	//	m_array[i][2] = 0;
+	//}
+   m_array[0][0] = -1.f;
+   m_array[0][1] = -1.f;
+   m_array[0][2] = 0.f;
+
+   m_x = m_array[0][0];
+   m_y = m_array[0][1];
+   m_z = m_array[0][2];
+
+   m_array[1][0] = 1.f;
+   m_array[1][1] = -1.f;
+   m_array[1][2] = 0.f;
+
+   m_array[2][0] = 0.f;
+   m_array[2][1] = 1.f;
+   m_array[2][2] = 0.f;
+
+   VecSub(m_array[1], m_array[0], m_v1);
+   VecSub(m_array[2], m_array[0], m_v2);
+   VecCross(m_v1, m_v2, m_Normal);
+   VecNormalize(m_Normal);
+   m_byteColorArray[0] = 255;
 	m_byteColorArray[1] = 255;
 	m_byteColorArray[2] = 255;
 }
@@ -255,7 +274,7 @@ BOOL CPolygonDlg::OnInitDialog()
 	m_listVertices.InsertColumn(1, _T("X"), LVCFMT_LEFT, 100);
 	m_listVertices.InsertColumn(2, _T("Y"), LVCFMT_LEFT, 100);
 	m_listVertices.InsertColumn(3, _T("Z"), LVCFMT_LEFT, 100);
-	m_listVertices.InsertColumn(4, _T("Normal"), LVCFMT_LEFT, 100);
+	m_listVertices.InsertColumn(4, _T("Normal"), LVCFMT_LEFT, 250);
 
 	for (byte i = 0; i < m_num_vertices; ++i)
 	{
@@ -268,7 +287,12 @@ BOOL CPolygonDlg::OnInitDialog()
 		m_listVertices.SetItemText(i, 2, m_sValue);
 		m_sValue.Format(_T("%f"), m_array[i][2]);
 		m_listVertices.SetItemText(i, 3, m_sValue);
-	}
+      if ((1 < i) && (0 == m_num_vertices % 3))
+      {
+         m_sValue.Format(_T("%f %F %f"), m_Normal[0], m_Normal[1], m_Normal[2]);
+         m_listVertices.SetItemText(i, 4, m_sValue);
+      }
+   }
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

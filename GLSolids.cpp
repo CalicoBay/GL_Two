@@ -93,12 +93,12 @@ float cpdata[][3] = {
      A[0] *= invdist;
      A[1] *= invdist;
      A[2] *= invdist;
-	 return 1;
+	 return TRUE;
    }
    else
    {
      AfxMessageBox(_T("Zero-Length Vectors cannot be Normalized"));
-     return 0;
+     return FALSE;
    }
  }
 //////////////////////////////////////////////////////////////////////////////////////

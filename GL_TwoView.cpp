@@ -939,6 +939,7 @@ void CGL_TwoView::OnUpdateViewDirty(CCmdUI *pCmdUI)
    }
 
    pCmdUI->Enable(TRUE);
+   Invalidate();
 }
 
 
