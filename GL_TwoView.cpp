@@ -657,8 +657,8 @@ void CGL_TwoView::OnInitialUpdate()
       m_poly_face = GL_FRONT_AND_BACK;
       m_poly_mode = GL_FILL;
 		m_nField_of_View = 50;
-		m_nNear = 5;
-		m_nFar = 15;
+		m_nNear = 0.01;
+		m_nFar = 1000;
 		m_nEyeX = 0; 
 		m_nEyeY = 0; 
 		m_nEyeZ = 10;

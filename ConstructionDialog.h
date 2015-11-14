@@ -29,7 +29,10 @@ public:
 	CEdit	m_rotatex_control;
 	CEdit	m_rotatey_control;
 	CEdit	m_rotatez_control;
-	CStatic	m_static_width;
+   CEdit	m_transX_control;
+   CEdit	m_transY_control;
+   CEdit	m_transZ_control;
+   CStatic	m_static_width;
 	CStatic	m_static_size;
 	CStatic	m_static_out_radius;
 	CStatic	m_static_in_radius;
@@ -74,4 +77,5 @@ protected:
 	afx_msg void OnColor();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+   //virtual void OnOK();
 };

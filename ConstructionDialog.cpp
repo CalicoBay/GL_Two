@@ -19,19 +19,19 @@ CConstructionDialog::CConstructionDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CConstructionDialog::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CConstructionDialog)
-	m_depth = 0.0;
-	m_height = 0.0;
-	m_in_radius = 0.5;
-	m_out_radius = 1.0;
-	m_radius = 1.0;
-	m_transX = 0.0;
-	m_transY = 0.0;
-	m_transZ = 0.0;
-	m_width = 0.0;
-	m_scale = 0.0;
-	m_rotate_x = 0.0;
-	m_rotate_y = 0.0;
-	m_rotate_z = 0.0;
+	m_depth = (double)0.0;
+	m_height = (double)0.0;
+	m_in_radius = (double)0.5;
+	m_out_radius = (double)1.0;
+	m_radius = (double)1.0;
+	m_transX = (double)0.00000;
+	m_transY = (double)0.00000;
+	m_transZ = (double)0.00000;
+	m_width = (double)0.0;
+	m_scale = (double)0.0;
+	m_rotate_x = (double)0.0;
+	m_rotate_y = (double)0.0;
+	m_rotate_z = (double)0.0;
 	m_str_Descriptor = "";
 	m_bClosed = FALSE;
 	//}}AFX_DATA_INIT
@@ -62,7 +62,10 @@ void CConstructionDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ROTATE_X, m_rotatex_control);
 	DDX_Control(pDX, IDC_ROTATE_Y, m_rotatey_control);
 	DDX_Control(pDX, IDC_ROTATE_Z, m_rotatez_control);
-	DDX_Control(pDX, IDC_STATIC_WIDTH, m_static_width);
+   DDX_Control(pDX, IDC_TRANSX, m_transX_control);
+   DDX_Control(pDX, IDC_TRANSY, m_transY_control);
+   DDX_Control(pDX, IDC_TRANSZ, m_transZ_control);
+   DDX_Control(pDX, IDC_STATIC_WIDTH, m_static_width);
 	DDX_Control(pDX, IDC_STATIC_SIZE, m_static_size);
 	DDX_Control(pDX, IDC_STATIC_OUT_RADIUS, m_static_out_radius);
 	DDX_Control(pDX, IDC_STATIC_IN_RADIUS, m_static_in_radius);
@@ -290,8 +293,11 @@ BOOL CConstructionDialog::OnInitDialog()
 	default:
 		break;
 	}
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
+
+   m_transX_control.SetWindowText(_T("0.0"));
+   m_transY_control.SetWindowText(_T("0.0"));
+   m_transZ_control.SetWindowText(_T("0.0"));
+   return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
@@ -309,3 +315,21 @@ void CConstructionDialog::OnColor()
 		m_byteColorArray[2] = GetBValue(colorref);
 	}
 }
+
+
+//void CConstructionDialog::OnOK()
+//{
+//   // TODO: Add your specialized code here and/or call the base class
+//   // Just checking values here in release build, something weird is going on.
+//   // I wrote this stuff 20 years ago, I was so naive.
+//
+//   CString csMsg;
+//   csMsg.Format(_T("Transform XYZ: %.2f %.2f %.2f"), m_transX, m_transY, m_transZ);
+//   ::AfxMessageBox(csMsg);
+//   //UpdateData(TRUE);
+//   //csMsg.Format(_T("Transform XYZ after UpdateData(TRUE): %.2f %.2f %.2f"), m_transX, m_transY, m_transZ);
+//   //::AfxMessageBox(csMsg);
+//   CDialog::OnOK();
+//   csMsg.Format(_T("Transform XYZ after CDialog::OnOK(): %.2f %.2f %.2f"), m_transX, m_transY, m_transZ);
+//   ::AfxMessageBox(csMsg);
+//}
