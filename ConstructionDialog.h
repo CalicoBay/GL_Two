@@ -66,16 +66,16 @@ BYTE m_byteColorArray[3];
 	//{{AFX_VIRTUAL(CConstructionDialog)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+   virtual BOOL OnInitDialog();
+   //virtual void OnOK();
+   //}}AFX_VIRTUAL
 
 // Implementation
 protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CConstructionDialog)
-	virtual BOOL OnInitDialog();
 	afx_msg void OnColor();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-   //virtual void OnOK();
 };

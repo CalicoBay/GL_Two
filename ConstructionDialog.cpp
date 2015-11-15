@@ -294,9 +294,42 @@ BOOL CConstructionDialog::OnInitDialog()
 		break;
 	}
 
-   m_transX_control.SetWindowText(_T("0.0"));
-   m_transY_control.SetWindowText(_T("0.0"));
-   m_transZ_control.SetWindowText(_T("0.0"));
+   CString csFormatter;
+   csFormatter.Format(_T("%.7f"), m_depth);
+   m_depth_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_height);
+   m_height_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_in_radius);
+   m_in_radius_control.SetWindowText(csFormatter);
+   
+   csFormatter.Format(_T("%.7f"), m_out_radius);
+   m_out_radius_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_radius);
+   m_radius_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_width);
+   m_width_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_scale);
+   m_size_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_rotate_x);
+   m_rotatex_control.SetWindowText(csFormatter);
+   csFormatter.Format(_T("%.7f"), m_rotate_y);
+   m_rotatey_control.SetWindowText(csFormatter);
+   csFormatter.Format(_T("%.7f"), m_rotate_z);
+   m_rotatez_control.SetWindowText(csFormatter);
+
+   csFormatter.Format(_T("%.7f"), m_transX);
+   m_transX_control.SetWindowText(csFormatter);
+   csFormatter.Format(_T("%.7f"), m_transY);
+   m_transY_control.SetWindowText(csFormatter);
+   csFormatter.Format(_T("%.7f"), m_transZ);
+   m_transZ_control.SetWindowText(csFormatter);
+
    return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
