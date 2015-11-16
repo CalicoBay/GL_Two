@@ -24,6 +24,7 @@ CPolygonDlg::CPolygonDlg(CWnd* pParent /*=NULL*/)
 	m_show_which_vertex = 0;
 	m_num_vertices = 3;
 	m_bConvex = TRUE;
+   m_array.SetSize(256);
 	//}}AFX_DATA_INIT
 	//for (int i = 0; i < 256; i++)
 	//{
@@ -118,11 +119,11 @@ void CPolygonDlg::OnNext()
 		{
 			m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
 		}
-		m_sValue.Format(_T("%f"), m_x);
+		m_sValue.Format(_T("%.6f"), m_x);
 		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%f"), m_y);
+		m_sValue.Format(_T("%.6f"), m_y);
 		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%f"), m_z);
+		m_sValue.Format(_T("%.6f"), m_z);
 		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
 
 		m_show_which_vertex++;
@@ -281,15 +282,15 @@ BOOL CPolygonDlg::OnInitDialog()
 		m_sValue.Format(_T("%d"), i);
 		m_listVertices.InsertItem(i, m_sValue);
 
-		m_sValue.Format(_T("%f"), m_array[i][0]);
+		m_sValue.Format(_T("%.6f"), m_array[i][0]);
 		m_listVertices.SetItemText(i, 1, m_sValue);
-		m_sValue.Format(_T("%f"), m_array[i][1]);
+		m_sValue.Format(_T("%.6f"), m_array[i][1]);
 		m_listVertices.SetItemText(i, 2, m_sValue);
-		m_sValue.Format(_T("%f"), m_array[i][2]);
+		m_sValue.Format(_T("%.6f"), m_array[i][2]);
 		m_listVertices.SetItemText(i, 3, m_sValue);
       if ((1 < i) && (0 == m_num_vertices % 3))
       {
-         m_sValue.Format(_T("%f %F %f"), m_Normal[0], m_Normal[1], m_Normal[2]);
+         m_sValue.Format(_T("%.2f %.2f %.2f"), m_Normal[0], m_Normal[1], m_Normal[2]);
          m_listVertices.SetItemText(i, 4, m_sValue);
       }
    }
@@ -310,16 +311,16 @@ void CPolygonDlg::OnKillFocusDoubleX()
 	if (-1 == iFound)
 	{
 		m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
-		m_sValue.Format(_T("%f"), m_x);
+		m_sValue.Format(_T("%.6f"), m_x);
 		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%f"), m_y);
+		m_sValue.Format(_T("%.6f"), m_y);
 		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%f"), m_z);
+		m_sValue.Format(_T("%.6f"), m_z);
 		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
 	}
 	else
 	{
-		m_sValue.Format(_T("%f"), m_x);
+		m_sValue.Format(_T("%.6f"), m_x);
 		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
 	}
 }
@@ -336,16 +337,16 @@ void CPolygonDlg::OnKillFocusDoubleY()
 	if (-1 == iFound)
 	{
 		m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
-		m_sValue.Format(_T("%f"), m_x);
+		m_sValue.Format(_T("%.6f"), m_x);
 		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%f"), m_y);
+		m_sValue.Format(_T("%.6f"), m_y);
 		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%f"), m_z);
+		m_sValue.Format(_T("%.6f"), m_z);
 		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
 	}
 	else
 	{
-		m_sValue.Format(_T("%f"), m_y);
+		m_sValue.Format(_T("%.6f"), m_y);
 		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
 	}
 }
@@ -362,16 +363,16 @@ void CPolygonDlg::OnKillFocusDoubleZ()
 	if (-1 == iFound)
 	{
 		m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
-		m_sValue.Format(_T("%f"), m_x);
+		m_sValue.Format(_T("%.6f"), m_x);
 		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%f"), m_y);
+		m_sValue.Format(_T("%.6f"), m_y);
 		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%f"), m_z);
+		m_sValue.Format(_T("%.6f"), m_z);
 		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
 	}
 	else
 	{
-		m_sValue.Format(_T("%f"), m_z);
+		m_sValue.Format(_T("%.6f"), m_z);
 		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
 	}
 }

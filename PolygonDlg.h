@@ -26,7 +26,8 @@ public:
 	BYTE	m_num_vertices;
 	BOOL	m_bConvex;
 	//}}AFX_DATA
-   double m_array[256][3] = { 0 };
+   //double m_array[256][3] = { 0 };
+   CArray<double[3], double[3]> m_array;
    double m_v1[3] = { 0 };
    double m_v2[3] = { 0 };
    double m_Normal[3] = { 0 };
