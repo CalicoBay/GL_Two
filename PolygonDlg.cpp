@@ -25,20 +25,9 @@ CPolygonDlg::CPolygonDlg(CWnd* pParent /*=NULL*/)
 	m_num_vertices = 3;
 	m_bConvex = TRUE;
    m_array.SetSize(256);
-	//}}AFX_DATA_INIT
-	//for (int i = 0; i < 256; i++)
-	//{
-	//	m_array[i][0] = 0;
-	//	m_array[i][1] = 0;
-	//	m_array[i][2] = 0;
-	//}
    m_array[0][0] = -1.f;
    m_array[0][1] = -1.f;
    m_array[0][2] = 0.f;
-
-   m_x = m_array[0][0];
-   m_y = m_array[0][1];
-   m_z = m_array[0][2];
 
    m_array[1][0] = 1.f;
    m_array[1][1] = -1.f;
@@ -55,6 +44,7 @@ CPolygonDlg::CPolygonDlg(CWnd* pParent /*=NULL*/)
    m_byteColorArray[0] = 255;
 	m_byteColorArray[1] = 255;
 	m_byteColorArray[2] = 255;
+   //}}AFX_DATA_INIT
 }
 
 
@@ -69,9 +59,9 @@ void CPolygonDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT5, m_editVertex);
 	DDX_Control(pDX, IDC_CONVEX, m_Convex_ctrl);
 	DDX_Control(pDX, IDC_VERTICES, m_listVertices);
-	DDX_Text(pDX, IDC_DOUBLEX, m_x);
-	DDX_Text(pDX, IDC_DOUBLEY, m_y);
-	DDX_Text(pDX, IDC_DOUBLEZ, m_z);
+	DDX_Text(pDX, IDC_DOUBLEX, m_array[m_show_which_vertex][0]);
+	DDX_Text(pDX, IDC_DOUBLEY, m_array[m_show_which_vertex][1]);
+	DDX_Text(pDX, IDC_DOUBLEZ, m_array[m_show_which_vertex][2]);
 	DDX_Text(pDX, IDC_EDIT5, m_show_which_vertex);
 	DDX_Text(pDX, IDC_POINTS, m_num_vertices);
 	DDV_MinMaxByte(pDX, m_num_vertices, 3, 255);
@@ -86,17 +76,14 @@ BEGIN_MESSAGE_MAP(CPolygonDlg, CDialog)
 	ON_BN_CLICKED(IDC_PREVIOUS, OnPrevious)
 	ON_BN_CLICKED(IDC_CONVEX, OnConvex)
 	ON_EN_CHANGE(IDC_EDIT5, OnChangeVertex)
-	//ON_EN_CHANGE(IDC_DOUBLEX, OnChangeDoublex)
-	//ON_EN_CHANGE(IDC_DOUBLEY, OnChangeDoubley)
-	//ON_EN_CHANGE(IDC_DOUBLEZ, OnChangeDoublez)
 	ON_EN_CHANGE(IDC_POINTS, OnChangePoints)
 	ON_BN_CLICKED(IDC_COLOR, OnColor)
 	ON_BN_CLICKED(IDOK, OnOK)
-	//}}AFX_MSG_MAP
-	ON_NOTIFY(LVN_ITEMCHANGED, IDC_VERTICES, &CPolygonDlg::OnLvnItemchangedVertices)
-	ON_EN_KILLFOCUS(IDC_DOUBLEX, &CPolygonDlg::OnKillFocusDoubleX)
-	ON_EN_KILLFOCUS(IDC_DOUBLEY, &CPolygonDlg::OnKillFocusDoubleY)
-	ON_EN_KILLFOCUS(IDC_DOUBLEZ, &CPolygonDlg::OnKillFocusDoubleZ)
+   ON_NOTIFY(LVN_ITEMCHANGED, IDC_VERTICES, &CPolygonDlg::OnLvnItemchangedVertices)
+   ON_EN_KILLFOCUS(IDC_DOUBLEX, &CPolygonDlg::OnKillFocusDoubleX)
+   ON_EN_KILLFOCUS(IDC_DOUBLEY, &CPolygonDlg::OnKillFocusDoubleY)
+   ON_EN_KILLFOCUS(IDC_DOUBLEZ, &CPolygonDlg::OnKillFocusDoubleZ)
+   //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -107,9 +94,6 @@ void CPolygonDlg::OnNext()
 	if (m_show_which_vertex < m_num_vertices)
 	{
 		UpdateData(TRUE);
-		m_array[m_show_which_vertex][0] = m_x;
-		m_array[m_show_which_vertex][1] = m_y;
-		m_array[m_show_which_vertex][2] = m_z;
 		m_sValue.Format(_T("%d"), m_show_which_vertex);
 		LVFINDINFO FindInfo = { 0 };
 		FindInfo.flags = LVFI_STRING;
@@ -119,22 +103,19 @@ void CPolygonDlg::OnNext()
 		{
 			m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
 		}
-		m_sValue.Format(_T("%.6f"), m_x);
+		m_sValue.Format(_T("%.6f"), m_array[m_show_which_vertex][0]);
 		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_y);
+		m_sValue.Format(_T("%.6f"), m_array[m_show_which_vertex][1]);
 		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_z);
+		m_sValue.Format(_T("%.6f"), m_array[m_show_which_vertex][2]);
 		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
 
-		m_show_which_vertex++;
+		++m_show_which_vertex;
 		if (m_show_which_vertex == m_num_vertices)
 		{
 			GotoDlgCtrl(GetDlgItem(IDOK));
 			return;
 		}
-		m_x = m_array[m_show_which_vertex][0];
-		m_y = m_array[m_show_which_vertex][1];
-		m_z = m_array[m_show_which_vertex][2];
 		UpdateData(FALSE);
 		GotoDlgCtrl(GetDlgItem(IDC_DOUBLEX));
 	}
@@ -147,13 +128,7 @@ void CPolygonDlg::OnPrevious()
 	if (m_show_which_vertex > 0)
 	{
 		UpdateData(TRUE);
-		m_array[m_show_which_vertex][0] = m_x;
-		m_array[m_show_which_vertex][1] = m_y;
-		m_array[m_show_which_vertex][2] = m_z;
-		m_show_which_vertex--;
-		m_x = m_array[m_show_which_vertex][0];
-		m_y = m_array[m_show_which_vertex][1];
-		m_z = m_array[m_show_which_vertex][2];
+		--m_show_which_vertex;
 		UpdateData(FALSE);
 		GotoDlgCtrl(GetDlgItem(IDC_DOUBLEX));
 	}
@@ -175,9 +150,6 @@ void CPolygonDlg::OnChangeVertex()
 	if (which_vertex < m_num_vertices)
 	{
 		m_show_which_vertex = which_vertex;
-		m_x = m_array[which_vertex][0];
-		m_y = m_array[which_vertex][1];
-		m_z = m_array[which_vertex][2];
 		UpdateData(FALSE);		
 	}
 	else
@@ -188,34 +160,7 @@ void CPolygonDlg::OnChangeVertex()
 void CPolygonDlg::OnOK()
 {
 	UpdateData(TRUE);
-	m_array[m_show_which_vertex][0] = m_x;
-	m_array[m_show_which_vertex][1] = m_y;
-	m_array[m_show_which_vertex][2] = m_z;
 	CDialog::OnOK();
-}
-
-void CPolygonDlg::OnChangeDoublex() 
-{
-	CString str_X;
-	m_editX.GetWindowText(str_X);
-	double value = _tstof(str_X);	
-	m_array[m_show_which_vertex][0] = value;
-}
-
-void CPolygonDlg::OnChangeDoubley() 
-{
-	CString str_Y;
-	m_editY.GetWindowText(str_Y);
-	double value = _tstof(str_Y);	
-	m_array[m_show_which_vertex][1] = value;
-}
-
-void CPolygonDlg::OnChangeDoublez() 
-{
-	CString str_Z;
-	m_editZ.GetWindowText(str_Z);
-	double value = _tstof(str_Z);	
-	m_array[m_show_which_vertex][2] = value;
 }
 
 void CPolygonDlg::OnChangePoints() 
@@ -255,9 +200,6 @@ void CPolygonDlg::OnLvnItemchangedVertices(NMHDR *pNMHDR, LRESULT *pResult)
 			if (iItem != m_show_which_vertex)
 			{
 				m_show_which_vertex = iItem;
-				m_x = m_array[iItem][0];
-				m_y = m_array[iItem][1];
-				m_z = m_array[iItem][2];
 				UpdateData(FALSE);
 			}
 		}
@@ -277,7 +219,7 @@ BOOL CPolygonDlg::OnInitDialog()
 	m_listVertices.InsertColumn(3, _T("Z"), LVCFMT_LEFT, 100);
 	m_listVertices.InsertColumn(4, _T("Normal"), LVCFMT_LEFT, 250);
 
-	for (byte i = 0; i < m_num_vertices; ++i)
+	for (short i = 0; i < 256; ++i)
 	{
 		m_sValue.Format(_T("%d"), i);
 		m_listVertices.InsertItem(i, m_sValue);
@@ -288,7 +230,7 @@ BOOL CPolygonDlg::OnInitDialog()
 		m_listVertices.SetItemText(i, 2, m_sValue);
 		m_sValue.Format(_T("%.6f"), m_array[i][2]);
 		m_listVertices.SetItemText(i, 3, m_sValue);
-      if ((1 < i) && (0 == m_num_vertices % 3))
+      if ((1 < i) && (0 == i % 2))
       {
          m_sValue.Format(_T("%.2f %.2f %.2f"), m_Normal[0], m_Normal[1], m_Normal[2]);
          m_listVertices.SetItemText(i, 4, m_sValue);
@@ -303,76 +245,34 @@ BOOL CPolygonDlg::OnInitDialog()
 void CPolygonDlg::OnKillFocusDoubleX()
 {
 	UpdateData(TRUE);
-	m_sValue.Format(_T("%d"), m_show_which_vertex);
-	LVFINDINFO FindInfo = { 0 };
-	FindInfo.flags = LVFI_STRING;
-	FindInfo.psz = m_sValue;
-	int iFound = m_listVertices.FindItem(&FindInfo);
-	if (-1 == iFound)
-	{
-		m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_x);
-		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_y);
-		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_z);
-		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
-	}
-	else
-	{
-		m_sValue.Format(_T("%.6f"), m_x);
-		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-	}
+   if (m_show_which_vertex < m_num_vertices)
+   {
+      m_sValue.Format(_T("%d"), m_show_which_vertex);
+      m_sValue.Format(_T("%.6f"), m_array[m_show_which_vertex][0]);
+      m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
+   }
 }
 
 
 void CPolygonDlg::OnKillFocusDoubleY()
 {
 	UpdateData(TRUE);
-	m_sValue.Format(_T("%d"), m_show_which_vertex);
-	LVFINDINFO FindInfo = { 0 };
-	FindInfo.flags = LVFI_STRING;
-	FindInfo.psz = m_sValue;
-	int iFound = m_listVertices.FindItem(&FindInfo);
-	if (-1 == iFound)
-	{
-		m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_x);
-		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_y);
-		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_z);
-		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
-	}
-	else
-	{
-		m_sValue.Format(_T("%.6f"), m_y);
-		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-	}
+   if (m_show_which_vertex < m_num_vertices)
+   {
+      m_sValue.Format(_T("%d"), m_show_which_vertex);
+      m_sValue.Format(_T("%.6f"), m_array[m_show_which_vertex][1]);
+      m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
+   }
 }
 
 
 void CPolygonDlg::OnKillFocusDoubleZ()
 {
 	UpdateData(TRUE);
-	m_sValue.Format(_T("%d"), m_show_which_vertex);
-	LVFINDINFO FindInfo = { 0 };
-	FindInfo.flags = LVFI_STRING;
-	FindInfo.psz = m_sValue;
-	int iFound = m_listVertices.FindItem(&FindInfo);
-	if (-1 == iFound)
-	{
-		m_listVertices.InsertItem(m_show_which_vertex, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_x);
-		m_listVertices.SetItemText(m_show_which_vertex, 1, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_y);
-		m_listVertices.SetItemText(m_show_which_vertex, 2, m_sValue);
-		m_sValue.Format(_T("%.6f"), m_z);
-		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
-	}
-	else
-	{
-		m_sValue.Format(_T("%.6f"), m_z);
-		m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
-	}
+   if (m_show_which_vertex < m_num_vertices)
+   {
+      m_sValue.Format(_T("%d"), m_show_which_vertex);
+      m_sValue.Format(_T("%.6f"), m_array[m_show_which_vertex][2]);
+      m_listVertices.SetItemText(m_show_which_vertex, 3, m_sValue);
+   }
 }

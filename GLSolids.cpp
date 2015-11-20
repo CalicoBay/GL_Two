@@ -1148,14 +1148,7 @@ int CGLPolygon::Change()
 	int vertex_no = 0;
 	CGLArray3d* p_array3d;
 	POSITION pos = m_vertexList.GetHeadPosition();
-	if (pos)
-	{
-		p_array3d = m_vertexList.GetHead();
-		dlg.m_x   = p_array3d->xyz[0];
-		dlg.m_y   = p_array3d->xyz[1];
-		dlg.m_z   = p_array3d->xyz[2];
-	}
-	while (pos != NULL)
+   while (pos != NULL)
 	{
 		p_array3d                 = m_vertexList.GetNext(pos);
 		dlg.m_array[vertex_no][0] = p_array3d->xyz[0];
