@@ -13,18 +13,18 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CViewDialog)
 	enum { IDD = IDD_VIEW };
-	double	m_nCenterX;
-	double	m_nCenterY;
-	double	m_nCenterZ;
-	double	m_nEyeX;
-	double	m_nEyeY;
-	double	m_nEyeZ;
-	double	m_nFarClip;
-	double	m_nField_of_View;
-	double	m_nNearClip;
-	double	m_UpX;
-	double	m_UpY;
-	double	m_UpZ;
+	double	m_dblCenterX;
+	double	m_dblCenterY;
+	double	m_dblCenterZ;
+	double	m_dblEyeX;
+	double	m_dblEyeY;
+	double	m_dblEyeZ;
+	double	m_dblFarClip;
+	double	m_dblFieldOfView;
+	double	m_dblNearClip;
+	double	m_dblUpX;
+	double	m_dblUpY;
+	double	m_dblUpZ;
 	//}}AFX_DATA
 
 

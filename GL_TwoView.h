@@ -45,9 +45,9 @@ protected:
 	CString  m_strWndClass;
 	HGLRC    m_hRC;
 	GLenum   m_poly_face, m_poly_mode;
-	GLdouble m_nAspect, m_nField_of_View, m_nNear, m_nFar;
-	GLdouble m_nEyeX, m_nEyeY, m_nEyeZ;
-	GLdouble m_nCenterX, m_nCenterY, m_nCenterZ;
+	GLdouble m_nAspect, m_dblFieldOfView, m_nNear, m_nFar;
+	GLdouble m_dblEyeX, m_dblEyeY, m_dblEyeZ;
+	GLdouble m_dblCenterX, m_dblCenterY, m_dblCenterZ;
 	GLdouble m_nUpX, m_nUpY, m_nUpZ;
    GLuint m_RefForList;
 

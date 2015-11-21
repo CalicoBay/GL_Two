@@ -11,10 +11,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+extern void AFXAPI GLTextFloatFormat(CDataExchange* pDX, int nIDC, void* pData, double value, int nSizeGcvt);
+
 /////////////////////////////////////////////////////////////////////////////
 // CRepeatDialog dialog
-
-
 CRepeatDialog::CRepeatDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CRepeatDialog::IDD, pParent)
 {
@@ -33,10 +33,10 @@ void CRepeatDialog::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CRepeatDialog)
 	DDX_Text(pDX, IDC_EDIT_COPIES, m_nCopies);
 	DDV_MinMaxUInt(pDX, m_nCopies, 1, 100000);
-	DDX_Text(pDX, IDC_EDIT_XOFF, m_dblXOffset);
-	DDX_Text(pDX, IDC_EDIT_YOFF, m_dblYOffset);
-	DDX_Text(pDX, IDC_EDIT_ZOFF, m_dblZOffset);
 	//}}AFX_DATA_MAP
+   GLTextFloatFormat(pDX, IDC_EDIT_XOFF, &m_dblXOffset, m_dblXOffset, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_EDIT_YOFF, &m_dblYOffset, m_dblYOffset, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_EDIT_ZOFF, &m_dblZOffset, m_dblZOffset, DBL_DIG);
 }
 
 

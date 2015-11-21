@@ -11,26 +11,26 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+extern void AFXAPI GLTextFloatFormat(CDataExchange* pDX, int nIDC, void* pData, double value, int nSizeGcvt);
+
 /////////////////////////////////////////////////////////////////////////////
 // CViewDialog dialog
-
-
 CViewDialog::CViewDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CViewDialog::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CViewDialog)
-	m_nCenterX = 0.0;
-	m_nCenterY = 0.0;
-	m_nCenterZ = 0.0;
-	m_nEyeX = 0.0;
-	m_nEyeY = 0.0;
-	m_nEyeZ = 0.0;
-	m_nFarClip = 0.0;
-	m_nField_of_View = 0.0;
-	m_nNearClip = 0.0;
-	m_UpX = 0.0;
-	m_UpY = 0.0;
-	m_UpZ = 0.0;
+	m_dblCenterX = 0.0;
+	m_dblCenterY = 0.0;
+	m_dblCenterZ = 0.0;
+	m_dblEyeX = 0.0;
+	m_dblEyeY = 0.0;
+	m_dblEyeZ = 0.0;
+	m_dblFarClip = 0.0;
+	m_dblFieldOfView = 0.0;
+	m_dblNearClip = 0.0;
+	m_dblUpX = 0.0;
+	m_dblUpY = 0.0;
+	m_dblUpZ = 0.0;
 	//}}AFX_DATA_INIT
 }
 
@@ -39,20 +39,20 @@ void CViewDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CViewDialog)
-	DDX_Text(pDX, IDC_CENTERX, m_nCenterX);
-	DDX_Text(pDX, IDC_CENTERY, m_nCenterY);
-	DDX_Text(pDX, IDC_CENTERZ, m_nCenterZ);
-	DDX_Text(pDX, IDC_EYEX, m_nEyeX);
-	DDX_Text(pDX, IDC_EYEY, m_nEyeY);
-	DDX_Text(pDX, IDC_EYEZ, m_nEyeZ);
-	DDX_Text(pDX, IDC_FAR_CLIP, m_nFarClip);
-	DDX_Text(pDX, IDC_FOV, m_nField_of_View);
-	DDV_MinMaxDouble(pDX, m_nField_of_View, 0., 180.);
-	DDX_Text(pDX, IDC_NEAR_CLIP, m_nNearClip);
-	DDX_Text(pDX, IDC_UPX, m_UpX);
-	DDX_Text(pDX, IDC_UPY, m_UpY);
-	DDX_Text(pDX, IDC_UPZ, m_UpZ);
-	//}}AFX_DATA_MAP
+   DDV_MinMaxDouble(pDX, m_dblFieldOfView, 0., 180.);
+   //}}AFX_DATA_MAP
+   GLTextFloatFormat(pDX, IDC_CENTERX, &m_dblCenterX, m_dblCenterX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_CENTERY, &m_dblCenterY, m_dblCenterY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_CENTERZ, &m_dblCenterZ, m_dblCenterZ, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_EYEX, &m_dblEyeX, m_dblEyeX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_EYEY, &m_dblEyeY, m_dblEyeY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_EYEZ, &m_dblEyeZ, m_dblEyeZ, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_FAR_CLIP, &m_dblFarClip, m_dblFarClip, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_FOV, &m_dblFieldOfView, m_dblFieldOfView, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_NEAR_CLIP, &m_dblNearClip, m_dblNearClip, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_UPX, &m_dblUpX, m_dblUpX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_UPY, &m_dblUpY, m_dblUpY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_UPZ, &m_dblUpZ, m_dblUpZ, DBL_DIG);
 }
 
 

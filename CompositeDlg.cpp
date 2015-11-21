@@ -13,10 +13,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+extern void AFXAPI GLTextFloatFormat(CDataExchange* pDX, int nIDC, void* pData, double value, int nSizeGcvt);
+
 /////////////////////////////////////////////////////////////////////////////
 // CCompositeDlg dialog
-
-
 CCompositeDlg::CCompositeDlg(CGLComp* pComp, CWnd* pParent /*=NULL*/)
 	: CDialog(CCompositeDlg::IDD, pParent)
 {
@@ -50,19 +50,19 @@ void CCompositeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TYPE_LIST, m_TypeList);
 	DDX_Control(pDX, IDC_OBJ_LIST, m_ObjectList);
 	DDX_Text(pDX, IDC_EDIT_NAME, m_str_ObjectDescriptor);
-	DDX_Text(pDX, IDC_ROTATE_X, m_RotateX);
-	DDX_Text(pDX, IDC_ROTATE_Y, m_RotateY);
-	DDX_Text(pDX, IDC_ROTATE_Z, m_RotateZ);
-	DDX_Text(pDX, IDC_SCALE_X, m_ScaleX);
-	DDX_Text(pDX, IDC_SCALE_Y, m_ScaleY);
-	DDX_Text(pDX, IDC_SCALE_Z, m_ScaleZ);
-	DDX_Text(pDX, IDC_TRANS_X, m_TranslateX);
-	DDX_Text(pDX, IDC_TRANS_Y, m_TranslateY);
-	DDX_Text(pDX, IDC_TRANS_Z, m_TranslateZ);
 	DDX_Check(pDX, IDC_SINGLE_COLOR, m_bSingleColorChecked);
 	DDX_Check(pDX, IDC_IS_A_CLIP, m_bIs_A_Clip);
 	DDX_Check(pDX, IDC_DEFAULT_CHK, m_bDefaultToSingleColor);
 	//}}AFX_DATA_MAP
+   GLTextFloatFormat(pDX, IDC_ROTATE_X, &m_RotateX, m_RotateX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_ROTATE_Y, &m_RotateY, m_RotateY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_ROTATE_Z, &m_RotateZ, m_RotateZ, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_SCALE_X, &m_ScaleX, m_ScaleX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_SCALE_Y, &m_ScaleY, m_ScaleY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_SCALE_Z, &m_ScaleZ, m_ScaleZ, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_TRANS_X, &m_TranslateX, m_TranslateX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_TRANS_Y, &m_TranslateY, m_TranslateY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_TRANS_Z, &m_TranslateZ, m_TranslateZ, DBL_DIG);
 }
 
 

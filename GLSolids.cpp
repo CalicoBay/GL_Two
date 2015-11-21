@@ -1078,7 +1078,6 @@ CGLPolygon::CGLPolygon(GLubyte vertex_count, CGLArray3dList* vertices,
 {
 	m_pdvNormal = NULL;
 	m_num_of_vertices = vertex_count;
-	m_strDescriptor.Format(_T("Polygon:%dV"), m_num_of_vertices);
 	POSITION pos = vertices->GetHeadPosition();
 	while (pos != NULL)
 	{
@@ -1161,7 +1160,8 @@ int CGLPolygon::Change()
 	dlg.m_byteColorArray[0] = GetColor()[0];
 	dlg.m_byteColorArray[1] = GetColor()[1];
 	dlg.m_byteColorArray[2] = GetColor()[2];
-	
+   dlg.m_csDesc = m_strDescriptor;
+
 	INT_PTR response = dlg.DoModal();
 	if (response == IDOK)
 	{
@@ -1218,7 +1218,7 @@ int CGLPolygon::Change()
 			AfxMessageBox(_T("Changes failed: Object will be removed"));
 			return 0;
 		}
-		m_strDescriptor.Format(_T("Polygon:%dV"), m_num_of_vertices);
+      m_strDescriptor = dlg.m_csDesc;
 		if (m_pDocument)
 			m_pDocument->SetModifiedFlag();
 		return 1;
@@ -1231,6 +1231,7 @@ CGLObjects* CGLPolygon::Make()
 	CGLPolygon* pGLPolygon = NULL;
 
 	CPolygonDlg dlg;
+   dlg.m_csDesc = _T("Polygon");
 	INT_PTR response = dlg.DoModal();
 	if (response == IDOK)
 	{
@@ -1251,6 +1252,7 @@ CGLObjects* CGLPolygon::Make()
 			return NULL;
 		}
 		pGLPolygon->m_bConvex = dlg.m_bConvex;
+      pGLPolygon->m_strDescriptor = dlg.m_csDesc;
 	}
 	return pGLPolygon;
 }

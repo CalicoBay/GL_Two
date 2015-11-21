@@ -11,27 +11,27 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+extern void AFXAPI GLTextFloatFormat(CDataExchange* pDX, int nIDC, void* pData, double value, int nSizeGcvt);
+
 /////////////////////////////////////////////////////////////////////////////
 // CConstructionDialog dialog
-
-
 CConstructionDialog::CConstructionDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CConstructionDialog::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CConstructionDialog)
-	m_depth = (double)0.0;
-	m_height = (double)0.0;
-	m_in_radius = (double)0.5;
-	m_out_radius = (double)1.0;
-	m_radius = (double)1.0;
-	m_transX = (double)0.00000;
-	m_transY = (double)0.00000;
-	m_transZ = (double)0.00000;
-	m_width = (double)0.0;
-	m_scale = (double)0.0;
-	m_rotate_x = (double)0.0;
-	m_rotate_y = (double)0.0;
-	m_rotate_z = (double)0.0;
+	m_depth = 0.0;
+	m_height = 0.0;
+	m_in_radius = 0.5;
+	m_out_radius = 1.0;
+	m_radius = 1.0;
+	m_transX = 0.0;
+	m_transY = 0.0;
+	m_transZ = 0.0;
+	m_width = 0.0;
+	m_scale = 0.0;
+	m_rotate_x = 0.0;
+	m_rotate_y = 0.0;
+	m_rotate_z = 0.0;
 	m_str_Descriptor = "";
 	m_bClosed = FALSE;
 	//}}AFX_DATA_INIT
@@ -72,25 +72,25 @@ void CConstructionDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_HEIGHT, m_static_height);
 	DDX_Control(pDX, IDC_STATIC_DEPTH, m_static_depth);
 	DDX_Control(pDX, IDC_STATIC_RADIUS, m_static_radius);
-	DDX_Text(pDX, IDC_DEPTH, m_depth);
-	DDX_Text(pDX, IDC_HEIGHT, m_height);
-	DDX_Text(pDX, IDC_IN_RADIUS, m_in_radius);
-	DDX_Text(pDX, IDC_OUT_RADIUS, m_out_radius);
-	DDX_Text(pDX, IDC_RADIUS, m_radius);
-	DDX_Text(pDX, IDC_TRANSX, m_transX);
-	DDX_Text(pDX, IDC_TRANSY, m_transY);
-	DDX_Text(pDX, IDC_TRANSZ, m_transZ);
-	DDX_Text(pDX, IDC_WIDTH, m_width);
-	DDX_Text(pDX, IDC_SCALE, m_scale);
-	DDX_Text(pDX, IDC_ROTATE_X, m_rotate_x);
-	DDV_MinMaxDouble(pDX, m_rotate_x, -359., 359.);
-	DDX_Text(pDX, IDC_ROTATE_Y, m_rotate_y);
-	DDV_MinMaxDouble(pDX, m_rotate_y, -359., 359.);
-	DDX_Text(pDX, IDC_ROTATE_Z, m_rotate_z);
-	DDV_MinMaxDouble(pDX, m_rotate_z, -359., 359.);
+   DDV_MinMaxDouble(pDX, m_rotate_x, -359., 359.);
+   DDV_MinMaxDouble(pDX, m_rotate_y, -359., 359.);
+   DDV_MinMaxDouble(pDX, m_rotate_z, -359., 359.);
 	DDX_Text(pDX, IDC_EDIT_DESCRIPTOR, m_str_Descriptor);
 	DDX_Check(pDX, IDC_CLOSED_CHK, m_bClosed);
 	//}}AFX_DATA_MAP
+   GLTextFloatFormat(pDX, IDC_DEPTH, &m_depth, m_depth, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_HEIGHT, &m_height, m_height, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_IN_RADIUS, &m_in_radius, m_in_radius, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_OUT_RADIUS, &m_out_radius, m_out_radius, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_RADIUS, &m_radius, m_radius, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_TRANSX, &m_transX, m_transX, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_TRANSY, &m_transY, m_transY, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_TRANSZ, &m_transZ, m_transZ, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_WIDTH, &m_width, m_width, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_SCALE, &m_scale, m_scale, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_ROTATE_X, &m_rotate_x, m_rotate_x, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_ROTATE_Y, &m_rotate_y, m_rotate_y, DBL_DIG);
+   GLTextFloatFormat(pDX, IDC_ROTATE_Z, &m_rotate_z, m_rotate_z, DBL_DIG);
 }
 
 
@@ -294,41 +294,41 @@ BOOL CConstructionDialog::OnInitDialog()
 		break;
 	}
 
-   CString csFormatter;
-   csFormatter.Format(_T("%.7f"), m_depth);
-   m_depth_control.SetWindowText(csFormatter);
+   //CString csFormatter;
+   //csFormatter.Format(_T("%.7f"), m_depth);
+   //m_depth_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_height);
-   m_height_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_height);
+   //m_height_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_in_radius);
-   m_in_radius_control.SetWindowText(csFormatter);
-   
-   csFormatter.Format(_T("%.7f"), m_out_radius);
-   m_out_radius_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_in_radius);
+   //m_in_radius_control.SetWindowText(csFormatter);
+   //
+   //csFormatter.Format(_T("%.7f"), m_out_radius);
+   //m_out_radius_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_radius);
-   m_radius_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_radius);
+   //m_radius_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_width);
-   m_width_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_width);
+   //m_width_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_scale);
-   m_size_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_scale);
+   //m_size_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_rotate_x);
-   m_rotatex_control.SetWindowText(csFormatter);
-   csFormatter.Format(_T("%.7f"), m_rotate_y);
-   m_rotatey_control.SetWindowText(csFormatter);
-   csFormatter.Format(_T("%.7f"), m_rotate_z);
-   m_rotatez_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_rotate_x);
+   //m_rotatex_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_rotate_y);
+   //m_rotatey_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_rotate_z);
+   //m_rotatez_control.SetWindowText(csFormatter);
 
-   csFormatter.Format(_T("%.7f"), m_transX);
-   m_transX_control.SetWindowText(csFormatter);
-   csFormatter.Format(_T("%.7f"), m_transY);
-   m_transY_control.SetWindowText(csFormatter);
-   csFormatter.Format(_T("%.7f"), m_transZ);
-   m_transZ_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_transX);
+   //m_transX_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_transY);
+   //m_transY_control.SetWindowText(csFormatter);
+   //csFormatter.Format(_T("%.7f"), m_transZ);
+   //m_transZ_control.SetWindowText(csFormatter);
 
    return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE

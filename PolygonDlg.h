@@ -18,6 +18,7 @@ public:
 	CEdit	m_editY;
 	CEdit	m_editX;
 	CEdit	m_editVertex;
+   CEdit m_editDesc;
 	CButton	m_Convex_ctrl;
 	BYTE	m_show_which_vertex;
 	BYTE	m_num_vertices;
@@ -28,10 +29,11 @@ public:
    double m_v2[3] = { 0 };
    double m_Normal[3] = { 0 };
 	BYTE m_byteColorArray[3];
+   CString m_csDesc;
 // Information
 protected:
 	CMFCListCtrl m_listVertices;
-	CString m_sValue;
+	CString m_csValue;
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPolygonDlg)

@@ -517,35 +517,35 @@ void CGL_TwoView::OnViewSettings()
 {
 	CViewDialog dlg;
 	
-	dlg.m_nCenterX = m_nCenterX;
-	dlg.m_nCenterY = m_nCenterY;
-	dlg.m_nCenterZ = m_nCenterZ;
-	dlg.m_nEyeX = m_nEyeX;
-	dlg.m_nEyeY = m_nEyeY;
-	dlg.m_nEyeZ = m_nEyeZ;
-	dlg.m_nFarClip = m_nFar;
-	dlg.m_nField_of_View = m_nField_of_View;
-	dlg.m_nNearClip = m_nNear;
-	dlg.m_UpX = m_nUpX;
-	dlg.m_UpY = m_nUpY;
-	dlg.m_UpZ = m_nUpZ;
+	dlg.m_dblCenterX = m_dblCenterX;
+	dlg.m_dblCenterY = m_dblCenterY;
+	dlg.m_dblCenterZ = m_dblCenterZ;
+	dlg.m_dblEyeX = m_dblEyeX;
+	dlg.m_dblEyeY = m_dblEyeY;
+	dlg.m_dblEyeZ = m_dblEyeZ;
+	dlg.m_dblFarClip = m_nFar;
+	dlg.m_dblFieldOfView = m_dblFieldOfView;
+	dlg.m_dblNearClip = m_nNear;
+	dlg.m_dblUpX = m_nUpX;
+	dlg.m_dblUpY = m_nUpY;
+	dlg.m_dblUpZ = m_nUpZ;
 
 	INT_PTR response = dlg.DoModal();
 
 	if (response == IDOK)
 	{
-		m_nCenterX = (GLdouble)dlg.m_nCenterX;
-		m_nCenterY = (GLdouble)dlg.m_nCenterY;
-		m_nCenterZ = (GLdouble)dlg.m_nCenterZ;
-		m_nEyeX = (GLdouble)dlg.m_nEyeX;
-		m_nEyeY = (GLdouble)dlg.m_nEyeY;
-		m_nEyeZ = (GLdouble)dlg.m_nEyeZ;
-		m_nFar = (GLdouble)dlg.m_nFarClip;
-		m_nField_of_View = (GLdouble)dlg.m_nField_of_View;
-		m_nNear = (GLdouble)dlg.m_nNearClip;
-		m_nUpX = (GLdouble)dlg.m_UpX;
-		m_nUpY = (GLdouble)dlg.m_UpY;
-		m_nUpZ = (GLdouble)dlg.m_UpZ;
+		m_dblCenterX = (GLdouble)dlg.m_dblCenterX;
+		m_dblCenterY = (GLdouble)dlg.m_dblCenterY;
+		m_dblCenterZ = (GLdouble)dlg.m_dblCenterZ;
+		m_dblEyeX = (GLdouble)dlg.m_dblEyeX;
+		m_dblEyeY = (GLdouble)dlg.m_dblEyeY;
+		m_dblEyeZ = (GLdouble)dlg.m_dblEyeZ;
+		m_nFar = (GLdouble)dlg.m_dblFarClip;
+		m_dblFieldOfView = (GLdouble)dlg.m_dblFieldOfView;
+		m_nNear = (GLdouble)dlg.m_dblNearClip;
+		m_nUpX = (GLdouble)dlg.m_dblUpX;
+		m_nUpY = (GLdouble)dlg.m_dblUpY;
+		m_nUpZ = (GLdouble)dlg.m_dblUpZ;
 		//AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
       Invalidate();
 	}
@@ -558,9 +558,9 @@ void CGL_TwoView::ChangeCamera()
    glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(m_nField_of_View, m_nAspect, m_nNear, m_nFar);
+	gluPerspective(m_dblFieldOfView, m_nAspect, m_nNear, m_nFar);
 	glViewport(0, 0, clientRect.right, clientRect.bottom);
-	gluLookAt(m_nEyeX, m_nEyeY, m_nEyeZ, m_nCenterX, m_nCenterY, m_nCenterZ, m_nUpX, m_nUpY, m_nUpZ);
+	gluLookAt(m_dblEyeX, m_dblEyeY, m_dblEyeZ, m_dblCenterX, m_dblCenterY, m_dblCenterZ, m_nUpX, m_nUpY, m_nUpZ);
 }
 
 
@@ -636,15 +636,15 @@ void CGL_TwoView::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{	// storing code
-		ar << m_poly_face << m_poly_mode << m_nField_of_View << m_nNear
-			<< m_nFar << m_nEyeX << m_nEyeY << m_nEyeZ << m_nCenterX << m_nCenterY
-				<< m_nCenterZ << m_nUpX << m_nUpY << m_nUpZ;
+		ar << m_poly_face << m_poly_mode << m_dblFieldOfView << m_nNear
+			<< m_nFar << m_dblEyeX << m_dblEyeY << m_dblEyeZ << m_dblCenterX << m_dblCenterY
+				<< m_dblCenterZ << m_nUpX << m_nUpY << m_nUpZ;
 	}
 	else
 	{	// loading code
-		ar >> m_poly_face >> m_poly_mode >> m_nField_of_View >> m_nNear
-			>> m_nFar >> m_nEyeX >> m_nEyeY >> m_nEyeZ >> m_nCenterX >> m_nCenterY
-				>> m_nCenterZ >> m_nUpX >> m_nUpY >> m_nUpZ;
+		ar >> m_poly_face >> m_poly_mode >> m_dblFieldOfView >> m_nNear
+			>> m_nFar >> m_dblEyeX >> m_dblEyeY >> m_dblEyeZ >> m_dblCenterX >> m_dblCenterY
+				>> m_dblCenterZ >> m_nUpX >> m_nUpY >> m_nUpZ;
 	}
 }
 
@@ -656,15 +656,15 @@ void CGL_TwoView::OnInitialUpdate()
 	{
       m_poly_face = GL_FRONT_AND_BACK;
       m_poly_mode = GL_FILL;
-		m_nField_of_View = 50;
+		m_dblFieldOfView = 50;
 		m_nNear = 0.01;
 		m_nFar = 1000;
-		m_nEyeX = 0; 
-		m_nEyeY = 0; 
-		m_nEyeZ = 10;
-		m_nCenterX = 0; 
-		m_nCenterY = 0; 
-		m_nCenterZ = 0;
+		m_dblEyeX = 0; 
+		m_dblEyeY = 0; 
+		m_dblEyeZ = 10;
+		m_dblCenterX = 0; 
+		m_dblCenterY = 0; 
+		m_dblCenterZ = 0;
 		m_nUpX = 0; 
 		m_nUpY = 1;
 		m_nUpZ = 0;
@@ -701,12 +701,12 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	switch(nChar)
 	{
 		case VK_ADD:
-			if (m_nField_of_View > 5)
-				m_nField_of_View -= 5;
+			if (m_dblFieldOfView > 5)
+				m_dblFieldOfView -= 5;
 			break;
 		case VK_SUBTRACT:
-			if (m_nField_of_View < 175)
-				m_nField_of_View += 5;
+			if (m_dblFieldOfView < 175)
+				m_dblFieldOfView += 5;
 			break;
 		case VK_F11:
 			if ((::GetKeyState(VK_SHIFT)>>1))
@@ -730,50 +730,50 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		case VK_LEFT:
 			if ((::GetKeyState(VK_SHIFT)>>1))
 			{
-				m_nCenterX -= 1.0f;
+				m_dblCenterX -= 1.0f;
 				break;
 			}
-			m_nEyeX -= 1.0f;
+			m_dblEyeX -= 1.0f;
 			break;
 		case VK_RIGHT:
 			if ((::GetKeyState(VK_SHIFT)>>1))
 			{
-				m_nCenterX += 1.0f;
+				m_dblCenterX += 1.0f;
 				break;
 			}
-			m_nEyeX += 1.0f;
+			m_dblEyeX += 1.0f;
 			break;
 		case VK_UP:
 			if ((::GetKeyState(VK_SHIFT)>>1))
 			{
-				m_nCenterY += 1.0f;
+				m_dblCenterY += 1.0f;
 				break;
 			}
-			m_nEyeY += 1.0f;
+			m_dblEyeY += 1.0f;
 			break;
 		case VK_DOWN:
 			if ((::GetKeyState(VK_SHIFT)>>1))
 			{
-				m_nCenterY -= 1.0f;
+				m_dblCenterY -= 1.0f;
 				break;
 			}
-			m_nEyeY -= 1.0f;
+			m_dblEyeY -= 1.0f;
 			break;
 		case VK_BACK:
 			if ((::GetKeyState(VK_SHIFT)>>1))
 			{
-				m_nCenterZ += 1.0f;
+				m_dblCenterZ += 1.0f;
 				break;
 			}
-			m_nEyeZ += 1.0f;
+			m_dblEyeZ += 1.0f;
 			break;
 		case VK_SPACE:
 			if ((::GetKeyState(VK_SHIFT)>>1))
 			{
-				m_nCenterZ -= 1.0f;
+				m_dblCenterZ -= 1.0f;
 				break;
 			}
-			m_nEyeZ -= 1.0f;
+			m_dblEyeZ -= 1.0f;
 			break;
     }
 	
@@ -783,7 +783,7 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CGL_TwoView::OnUpdateFoV(CCmdUI* pCmdUI)
 {
 	CString strFoV;
-	strFoV.Format(_T("Field of View %.f"), m_nField_of_View);
+	strFoV.Format(_T("Field of View %.f"), m_dblFieldOfView);
 	pCmdUI->SetText(strFoV);
 	pCmdUI->Enable(TRUE);
 }
@@ -791,7 +791,7 @@ void CGL_TwoView::OnUpdateFoV(CCmdUI* pCmdUI)
 void CGL_TwoView::OnUpdateLookFrom(CCmdUI* pCmdUI)
 {
 	CString strLookFrom;
-	strLookFrom.Format(_T("From %.2f %.2f %.2f"), m_nEyeX, m_nEyeY, m_nEyeZ);
+	strLookFrom.Format(_T("From %.2f %.2f %.2f"), m_dblEyeX, m_dblEyeY, m_dblEyeZ);
 	pCmdUI->SetText(strLookFrom);
 	pCmdUI->Enable(TRUE);
 }
@@ -799,7 +799,7 @@ void CGL_TwoView::OnUpdateLookFrom(CCmdUI* pCmdUI)
 void CGL_TwoView::OnUpdateLookAt(CCmdUI* pCmdUI)
 {
 	CString strLookAt;
-	strLookAt.Format(_T("At %.2f %.2f %.2f"), m_nCenterX, m_nCenterY, m_nCenterZ);
+	strLookAt.Format(_T("At %.2f %.2f %.2f"), m_dblCenterX, m_dblCenterY, m_dblCenterZ);
 	pCmdUI->SetText(strLookAt);
 	pCmdUI->Enable(TRUE);
 }

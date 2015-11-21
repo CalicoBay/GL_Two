@@ -103,8 +103,9 @@
 #define IDC_SINGLE_COLOR                1078
 #define IDC_IS_A_CLIP                   1082
 #define IDC_DEFAULT_CHK                 1083
-#define IDC_LIST1                       1084
 #define IDC_VERTICES                    1084
+#define IDC_EDIT1                       1085
+#define IDC_POLY_DESC                   1085
 #define ID_PRIMITIVES_POINTS            32771
 #define ID_PRIMITIVES_LINES             32772
 #define ID_PRIMITIVES_POLYGONS          32773
@@ -140,7 +141,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         32798
-#define _APS_NEXT_CONTROL_VALUE         1085
+#define _APS_NEXT_CONTROL_VALUE         1086
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif
