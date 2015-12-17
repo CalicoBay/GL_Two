@@ -21,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 DEFINE_GUID(ImageFormatPNG, 0xb96b3caf, 0x0728, 0x11d3, 0x9d, 0x7b, 0x00, 0x00, 0xf8, 0x1e, 0xf3, 0x2e);
 
-
+VOID WINAPI DrawAPC(ULONG_PTR dwParam){}
 
 class CGLObjects;
 /////////////////////////////////////////////////////////////////////////////
@@ -77,11 +77,12 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr)
    m_fClearColor[3] = 1.0f;
    m_bBlackBackground = TRUE;
    m_bCullFaces = FALSE;
+   m_hDrawEvent = ::CreateEvent(__nullptr, FALSE, FALSE, __nullptr);
    m_pDrawThread = new CWinThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
    if(__nullptr != m_pDrawThread)
    {
-      m_pDrawThread->m_bAutoDelete = FALSE;
-      m_pDrawThread->CreateThread(CREATE_SUSPENDED);
+      m_pDrawThread->m_bAutoDelete = TRUE;
+      m_pDrawThread->CreateThread();
    }
    ULARGE_INTEGER uli = { 0 };
    uli.QuadPart = (ULONGLONG)this;
@@ -90,11 +91,12 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr)
 
 CGL_TwoView::~CGL_TwoView()
 {
-   if(__nullptr != m_pDrawThread)
-   {
-      delete m_pDrawThread;
-      m_pDrawThread = __nullptr;
-   }
+   //if(__nullptr != m_pDrawThread)
+   //{
+   //   delete m_pDrawThread;
+   //   m_pDrawThread = __nullptr;
+   //}
+   ::CloseHandle(m_hDrawEvent);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -103,8 +105,8 @@ CGL_TwoView::~CGL_TwoView()
 void CGL_TwoView::OnDraw(CDC* pDC)
 {
 	//AfxBeginThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
-   m_pDrawThread->ResumeThread();
-   
+   //m_pDrawThread->ResumeThread();
+   ::SetEvent(m_hDrawEvent);
    //pDC->SetTextColor(RGB(255, 0, 0));
    //CString csTextOut(_T("Further Testing OpenGL and GDI Capture"));
    //pDC->TextOutW(20, 20, csTextOut);
@@ -119,8 +121,8 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
       AfxMessageBox(_T("CGL_TwoView::ThreadDraw returned 0"));
       return 0;	// illegal parameter
    }
-
-   while(pView->m_bActive)
+   DWORD dwWaitResult = ::WaitForSingleObjectEx(pView->m_hDrawEvent, INFINITE, TRUE);
+   while(WAIT_IO_COMPLETION != dwWaitResult)
    {
       if(wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
       {
@@ -176,7 +178,7 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
       {
          uiReturn = 0;
       }
-      pView->m_pDrawThread->SuspendThread();
+      dwWaitResult = ::WaitForSingleObjectEx(pView->m_hDrawEvent, INFINITE, TRUE);
    }
    return uiReturn;
 }
@@ -241,7 +243,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
          glRotatef(azimuth, 0.0, 1.0, 0.0);
          glCallList(pView->m_RefForList);
          glFlush();
-         ::Sleep(10);
+         //::Sleep(10);
          glLoadIdentity();
       }
 
@@ -499,8 +501,8 @@ void CGL_TwoView::OnDestroy()
 {
    if(__nullptr != m_pDrawThread)
    {
-      m_bActive = FALSE;
-      m_pDrawThread->ResumeThread();
+      ::QueueUserAPC(DrawAPC, m_pDrawThread->m_hThread, NULL);
+      ::WaitForSingleObject(m_pDrawThread->m_hThread, INFINITE);
    }
    wglDeleteContext(m_hRC);
    CView::OnDestroy();

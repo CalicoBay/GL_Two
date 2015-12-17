@@ -34,6 +34,7 @@ protected: // create from serialization only
    // Attributes
 	BOOL m_bDirty;
    BOOL m_bActive;
+   HANDLE m_hDrawEvent;
 public:
 	//CGL_TwoView();
 	CGL_TwoDoc* GetDocument();
