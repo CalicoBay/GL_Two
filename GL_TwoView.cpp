@@ -518,11 +518,8 @@ BOOL CGL_TwoView::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.lpszClass = m_strWndClass;
 	cs.style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
-   int one = 1;
-   char* name = "name";
-   //glutInit(&one, &name);
-   //glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-	return CView::PreCreateWindow(cs);
+
+   return CView::PreCreateWindow(cs);
 }
 
 int CGL_TwoView::OnCreate(LPCREATESTRUCT lpCreateStruct) 

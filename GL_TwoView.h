@@ -5,8 +5,6 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <gl/freeglut.h>
-#include "glaux.h"
 #include "GL_TwoDoc.h"
 
 class CGL_TwoView;

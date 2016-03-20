@@ -6,7 +6,6 @@
 #include "GLArray.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "glaux.h"
 
 class CGL_TwoDoc;
 typedef CTypedPtrList<CObList, CGLArray3d*> CGLArray3dList;

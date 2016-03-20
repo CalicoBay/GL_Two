@@ -1564,7 +1564,6 @@ void CGLTeapot::Draw(GLenum mode)
 			glDisable(GL_MAP2_VERTEX_3); glDisable(GL_MAP2_TEXTURE_COORD_2);
 		glPopMatrix ();
 		//glEndList();
-		//auxSolidTeapot(1.0);
 	glPopMatrix();
 		//glFlush();
 	glDisable(GL_AUTO_NORMAL);
@@ -1727,7 +1726,6 @@ void CGLTorus::Draw(GLenum mode)
 			glRotated(m_pRotation->xyz[1],0, 1, 0);
 		if(m_pRotation->xyz[2]!=0)
 			glRotated(m_pRotation->xyz[2], 0, 0, 1);
-		//auxSolidTorus(m_pScale->xyz[1], m_pScale->xyz[0]);
     
 		GLdouble    theta, phi, theta1, phi1;
 		GLdouble    p0[03], p1[3], p2[3], p3[3];
