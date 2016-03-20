@@ -6,6 +6,7 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <gl/freeglut.h>
 #include "glaux.h"
 #include "GL_TwoDoc.h"
 
@@ -35,10 +36,13 @@ protected: // create from serialization only
 	BOOL m_bDirty;
    BOOL m_bActive;
    HANDLE m_hDrawEvent;
+   HANDLE m_hAnimEvent;
+   //HANDLE m_hAnimThread;
 public:
 	//CGL_TwoView();
 	CGL_TwoDoc* GetDocument();
    CWinThread* m_pDrawThread;
+   CWinThread* m_pAnimThread;
 	static UINT ThreadDraw(LPVOID pParam);
    static UINT ThreadAnimatedDraw(LPVOID pParam);
    static UINT ThreadObjectDraw(LPVOID pParam);

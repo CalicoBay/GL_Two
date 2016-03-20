@@ -67,7 +67,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CGL_TwoView construction/destruction
-CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr)
+CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr), m_pAnimThread(__nullptr)
 {
 	m_bDirty = TRUE;
    m_bActive = TRUE;
@@ -78,11 +78,18 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr)
    m_bBlackBackground = TRUE;
    m_bCullFaces = FALSE;
    m_hDrawEvent = ::CreateEvent(__nullptr, FALSE, FALSE, __nullptr);
+   m_hAnimEvent = ::CreateEvent(__nullptr, FALSE, FALSE, __nullptr);
    m_pDrawThread = new CWinThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
    if(__nullptr != m_pDrawThread)
    {
       m_pDrawThread->m_bAutoDelete = TRUE;
       m_pDrawThread->CreateThread();
+   }
+   m_pAnimThread = new CWinThread(CGL_TwoView::ThreadAnimatedDraw, (LPVOID)this);
+   if (__nullptr != m_pAnimThread)
+   {
+      m_pAnimThread->m_bAutoDelete = FALSE;
+      m_pAnimThread->CreateThread();
    }
    ULARGE_INTEGER uli = { 0 };
    uli.QuadPart = (ULONGLONG)this;
@@ -91,12 +98,13 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr)
 
 CGL_TwoView::~CGL_TwoView()
 {
-   //if(__nullptr != m_pDrawThread)
-   //{
-   //   delete m_pDrawThread;
-   //   m_pDrawThread = __nullptr;
-   //}
+   if(__nullptr != m_pAnimThread)
+   {
+      delete m_pAnimThread;
+      m_pAnimThread = __nullptr;
+   }
    ::CloseHandle(m_hDrawEvent);
+   ::CloseHandle(m_hAnimEvent);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -171,7 +179,7 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
          {
             glCallList(pView->m_RefForList);
          }
-
+         //SwapBuffers(pView->GetDC()->m_hDC);
          wglMakeCurrent(NULL, NULL);
       }
       else
@@ -191,71 +199,78 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
       AfxMessageBox(_T("CGL_TwoView::ThreadAnimatedDraw returned 0"));
       return 0;	// illegal parameter
    }
-
-   DWORD dwLastError = 0UL;
-   ::SetLastError(dwLastError);
-   if(wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
+   DWORD dwWaitResult = ::WaitForSingleObjectEx(pView->m_hAnimEvent, INFINITE, TRUE);
+   while (WAIT_IO_COMPLETION != dwWaitResult)
    {
-      GLint position_lt_0[] = {10, 10, 10, 0}, ambient_lt_0[] = {1, 1, 1, 1};
-      glMatrixMode(GL_MODELVIEW);
-      glLoadIdentity();
 
-      if(FALSE == pView->m_bBlackBackground)
+      DWORD dwLastError = 0UL;
+      ::SetLastError(dwLastError);
+      if (wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
       {
-         glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
-         glDisable(GL_LIGHTING);
-         glDisable(GL_LIGHT0);
-      }
-      else
-      {
-         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-         glEnable(GL_COLOR_MATERIAL);
-         glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
-         glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
-         glEnable(GL_LIGHTING);
-         glEnable(GL_LIGHT0);
-      }
-
-     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
-
-      if(pView->m_bCullFaces)
-      {
-         glCullFace(GL_BACK);
-         glEnable(GL_CULL_FACE);
-      }
-      else
-      {
-         glDisable(GL_CULL_FACE);
-      }
-
-      if(pView->m_bDirty)
-      {
-         glNewList(pView->m_RefForList, GL_COMPILE);
-         pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
-         glEndList();
-         pView->m_bDirty = FALSE;
-      }
-
-      for(GLfloat azimuth = 0.0; azimuth < 360.0; azimuth += 0.100f)
-      {
-         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-         glRotatef(azimuth, 0.0, 1.0, 0.0);
-         glCallList(pView->m_RefForList);
-         glFlush();
-         //::Sleep(10);
+         GLint position_lt_0[] = { 10, 10, 10, 0 }, ambient_lt_0[] = { 1, 1, 1, 1 };
+         glMatrixMode(GL_MODELVIEW);
          glLoadIdentity();
-      }
 
-      wglMakeCurrent(NULL, NULL);
-   }
-   else
-   {
-      dwLastError = ::GetLastError();
-      CString csMessage;
-      csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
-      ::AfxMessageBox(csMessage);
-      return 0;
+         if (FALSE == pView->m_bBlackBackground)
+         {
+            glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
+            glDisable(GL_LIGHTING);
+            glDisable(GL_LIGHT0);
+         }
+         else
+         {
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glEnable(GL_COLOR_MATERIAL);
+            glLightiv(GL_LIGHT0, GL_POSITION, position_lt_0);
+            glLightiv(GL_LIGHT0, GL_AMBIENT, ambient_lt_0);
+            glEnable(GL_LIGHTING);
+            glEnable(GL_LIGHT0);
+         }
+
+         // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+         glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
+
+         if (pView->m_bCullFaces)
+         {
+            glCullFace(GL_BACK);
+            glEnable(GL_CULL_FACE);
+         }
+         else
+         {
+            glDisable(GL_CULL_FACE);
+         }
+
+         if (pView->m_bDirty)
+         {
+            glNewList(pView->m_RefForList, GL_COMPILE);
+            pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
+            glEndList();
+            pView->m_bDirty = FALSE;
+         }
+
+         for (GLfloat azimuth = 0.0; azimuth < 360.0; azimuth += 0.100f)
+         {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            glRotatef(azimuth, 0.0, 1.0, 0.0);
+            glCallList(pView->m_RefForList);
+            glFlush();
+            //SwapBuffers(pView->GetDC()->m_hDC);
+            dwWaitResult = ::SleepEx(1, TRUE);
+            if (WAIT_IO_COMPLETION == dwWaitResult) break;
+            glLoadIdentity();
+         }
+         wglMakeCurrent(NULL, NULL);
+      }
+      else
+      {
+         dwLastError = ::GetLastError();
+         CString csMessage;
+         csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
+         ::AfxMessageBox(csMessage);
+         //return 0;
+      }
+      if (WAIT_IO_COMPLETION == dwWaitResult) continue;
+      dwWaitResult = ::WaitForSingleObjectEx(pView->m_hAnimEvent, INFINITE, TRUE);
    }
 
    return 1;
@@ -264,23 +279,24 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
 
 UINT CGL_TwoView::ThreadObjectDraw(LPVOID pParam)
 {
-	if(NULL == pParam)
-   {
-      ::AfxMessageBox(_T("ThreadObjectDraw pParam is NULL"));
-      return 0;
-   }
+	//if(NULL == pParam)
+ //  {
+ //     ::AfxMessageBox(_T("ThreadObjectDraw pParam is NULL"));
+ //     return 0;
+ //  }
 
-   PDRAWPARAMETERS pDrawParams = (PDRAWPARAMETERS)pParam;
-   if((nullptr == pDrawParams->pGLObject) || (NULL == pDrawParams->pView) || (!pDrawParams->pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView))))
-	{
-		AfxMessageBox(_T("Thread returned 0"));
-		return 0;	// illegal parameter
-	}
+ //  PDRAWPARAMETERS pDrawParams = (PDRAWPARAMETERS)pParam;
+ //  if((nullptr == pDrawParams->pGLObject) || (NULL == pDrawParams->pView) || (!pDrawParams->pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView))))
+	//{
+	//	AfxMessageBox(_T("Thread returned 0"));
+	//	return 0;	// illegal parameter
+	//}
 
-	wglMakeCurrent(pDrawParams->pView->GetDC()->m_hDC, pDrawParams->pView->m_hRC);
-	pDrawParams->pGLObject->Draw(GL_RENDER);//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
-	wglMakeCurrent(NULL, NULL);
-   delete pParam;
+	//wglMakeCurrent(pDrawParams->pView->GetDC()->m_hDC, pDrawParams->pView->m_hRC);
+	//pDrawParams->pGLObject->Draw(GL_RENDER);//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
+ //  SwapBuffers(pDrawParams->pView->GetDC()->m_hDC);
+ //  wglMakeCurrent(NULL, NULL);
+ //  delete pParam;
 	return 1;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -499,6 +515,11 @@ void CGL_TwoView::OnSolidsTorus()
 
 void CGL_TwoView::OnDestroy() 
 {
+   if (__nullptr != m_pAnimThread)
+   {
+      ::QueueUserAPC(DrawAPC, m_pAnimThread->m_hThread, NULL);
+      ::WaitForSingleObject(m_pAnimThread->m_hThread, INFINITE);
+   }
    if(__nullptr != m_pDrawThread)
    {
       ::QueueUserAPC(DrawAPC, m_pDrawThread->m_hThread, NULL);
@@ -598,6 +619,10 @@ BOOL CGL_TwoView::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.lpszClass = m_strWndClass;
 	cs.style |= WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+   int one = 1;
+   char* name = "name";
+   //glutInit(&one, &name);
+   //glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	return CView::PreCreateWindow(cs);
 }
 
@@ -610,8 +635,8 @@ int CGL_TwoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),	// Structure size
 		1,								// Structure version number
-		PFD_DRAW_TO_WINDOW |			// Property flags
-			PFD_SUPPORT_OPENGL, PFD_TYPE_RGBA,
+		PFD_DRAW_TO_WINDOW |	PFD_SUPPORT_OPENGL,// | PFD_DOUBLEBUFFER,
+      PFD_TYPE_RGBA,
 		24,								// True color
 		0, 0, 0, 0, 0, 0,				// Not concerned with these
 		0, 0, 0, 0, 0, 0, 0,			// No alpha or accum buffer
@@ -702,7 +727,17 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	switch(nChar)
 	{
-		case VK_ADD:
+      case VK_ESCAPE:
+         if (__nullptr != m_pAnimThread)
+         {
+            ::QueueUserAPC(DrawAPC, m_pAnimThread->m_hThread, NULL);
+            ::WaitForSingleObject(m_pAnimThread->m_hThread, INFINITE);
+            ::CloseHandle(m_pAnimThread->m_hThread);
+            m_pAnimThread->m_hThread = NULL;
+            m_pAnimThread->CreateThread();
+         }
+         break;
+      case VK_ADD:
 			if (m_dblFieldOfView > 5)
 				m_dblFieldOfView -= 5;
 			break;
@@ -1094,5 +1129,6 @@ void CGL_TwoView::OnViewCapture()
 
 void CGL_TwoView::OnViewAnimate()
 {
-   AfxBeginThread(CGL_TwoView::ThreadAnimatedDraw, (LPVOID)this);
+   //AfxBeginThread(CGL_TwoView::ThreadAnimatedDraw, (LPVOID)this);
+   ::SetEvent(m_hAnimEvent);
 }
