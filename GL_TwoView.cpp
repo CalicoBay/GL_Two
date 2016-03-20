@@ -188,13 +188,13 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
 
    DWORD dwLastError = 0UL;
    ::SetLastError(dwLastError);
-   if (wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
+   if(wglMakeCurrent(pView->GetDC()->m_hDC, pView->m_hRC))
    {
       GLint position_lt_0[] = { 10, 10, 10, 0 }, ambient_lt_0[] = { 1, 1, 1, 1 };
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
-      if (FALSE == pView->m_bBlackBackground)
+      if(FALSE == pView->m_bBlackBackground)
       {
          glClearColor(pView->m_fClearColor[0], pView->m_fClearColor[1], pView->m_fClearColor[2], pView->m_fClearColor[3]);
          glDisable(GL_LIGHTING);
@@ -212,7 +212,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
 
       glPolygonMode(pView->m_poly_face, pView->m_poly_mode);
 
-      if (pView->m_bCullFaces)
+      if(pView->m_bCullFaces)
       {
          glCullFace(GL_BACK);
          glEnable(GL_CULL_FACE);
@@ -222,7 +222,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
          glDisable(GL_CULL_FACE);
       }
 
-      if (pView->m_bDirty)
+      if(pView->m_bDirty)
       {
          glNewList(pView->m_RefForList, GL_COMPILE);
          pView->GetDocument()->Draw(GL_RENDER, (!pView->m_bBlackBackground));//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
@@ -237,7 +237,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
          glCallList(pView->m_RefForList);
          glFlush();
          //SwapBuffers(pView->GetDC()->m_hDC);
-         if (WAIT_IO_COMPLETION == ::SleepEx(1, TRUE)) break;
+         if(WAIT_IO_COMPLETION == ::SleepEx(1, TRUE)) break;
          glLoadIdentity();
       }
       wglMakeCurrent(NULL, NULL);
@@ -309,7 +309,7 @@ void CGL_TwoView::OnObjectsNew()
 	{
 		pGLObject->SetDocument(GetDocument());
 		pGLObject->SetColorIsDifferent(FALSE);
-		if (!pGLObject->Change())
+		if(!pGLObject->Change())
 		{
 			delete pGLObject;
 			return;
@@ -330,7 +330,7 @@ void CGL_TwoView::OnObjectsNew()
 void CGL_TwoView::OnPrimitivesPolygons() 
 {
 	CGLObjects* pGLObject = CGLPolygon::Make();
-	if (pGLObject)
+	if(pGLObject)
 	{
 		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
       if(NULL != pDrawParams)
@@ -492,7 +492,7 @@ void CGL_TwoView::OnSolidsTorus()
 
 void CGL_TwoView::OnDestroy() 
 {
-   if (0 != ::QueueUserAPC(DrawAPC, m_hAnimThread, NULL))
+   if(0 != ::QueueUserAPC(DrawAPC, m_hAnimThread, NULL))
    {
       ::WaitForSingleObject(m_hAnimThread, INFINITE);
    }
@@ -531,7 +531,7 @@ void CGL_TwoView::OnViewSettings()
 
 	INT_PTR response = dlg.DoModal();
 
-	if (response == IDOK)
+	if(response == IDOK)
 	{
 		m_dblCenterX = (GLdouble)dlg.m_dblCenterX;
 		m_dblCenterY = (GLdouble)dlg.m_dblCenterY;
@@ -579,7 +579,7 @@ void CGL_TwoView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	CSelectDialog dlg(GetDocument()->GetObjects(), this);
 	INT_PTR response = dlg.DoModal();
-	if (response == IDOK)
+	if(response == IDOK)
 	{
 		m_bDirty = TRUE;
       Invalidate();
@@ -602,7 +602,7 @@ BOOL CGL_TwoView::PreCreateWindow(CREATESTRUCT& cs)
 
 int CGL_TwoView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-	if (CView::OnCreate(lpCreateStruct) == -1)
+	if(CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
 	PIXELFORMATDESCRIPTOR pfd = 
@@ -635,7 +635,7 @@ int CGL_TwoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CGL_TwoView::Serialize(CArchive& ar) 
 {
-	if (ar.IsStoring())
+	if(ar.IsStoring())
 	{	// storing code
 		ar << m_poly_face << m_poly_mode << m_dblFieldOfView << m_nNear
 			<< m_nFar << m_dblEyeX << m_dblEyeY << m_dblEyeZ << m_dblCenterX << m_dblCenterY
@@ -653,7 +653,7 @@ void CGL_TwoView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	
-	if (GetDocument()->m_bIsNew)
+	if(GetDocument()->m_bIsNew)
 	{
       m_poly_face = GL_FRONT_AND_BACK;
       m_poly_mode = GL_FILL;
@@ -677,7 +677,7 @@ void CGL_TwoView::OnObjectsList()
 {
 	CObjTreeDlg dlg(this);
 	INT_PTR response = dlg.DoModal();
-	if (response == IDOK)
+	if(response == IDOK)
 	{
 		m_bDirty = TRUE;
       Invalidate();
@@ -703,34 +703,34 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
          ::QueueUserAPC(DrawAPC, m_hAnimThread, NULL);
          break;
       case VK_ADD:
-			if (m_dblFieldOfView > 5)
+			if(m_dblFieldOfView > 5)
 				m_dblFieldOfView -= 5;
 			break;
 		case VK_SUBTRACT:
-			if (m_dblFieldOfView < 175)
+			if(m_dblFieldOfView < 175)
 				m_dblFieldOfView += 5;
 			break;
 		case VK_F11:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
-				if (m_nNear > 1.0f)
+				if(m_nNear > 1.0f)
 					m_nNear -= 1.0f;
 				break;
 			}
-			if (m_nNear < (m_nFar - 1.0f))
+			if(m_nNear < (m_nFar - 1.0f))
 				m_nNear += 1.0f;
 			break;
 		case VK_F12:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
-				if (m_nFar > (m_nNear + 1.0f))
+				if(m_nFar > (m_nNear + 1.0f))
 					m_nFar -= 1.0f;
 				break;
 			}
 			m_nFar += 1.0f;
 			break;
 		case VK_LEFT:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
 				m_dblCenterX -= 1.0f;
 				break;
@@ -738,7 +738,7 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_dblEyeX -= 1.0f;
 			break;
 		case VK_RIGHT:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
 				m_dblCenterX += 1.0f;
 				break;
@@ -746,7 +746,7 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_dblEyeX += 1.0f;
 			break;
 		case VK_UP:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
 				m_dblCenterY += 1.0f;
 				break;
@@ -754,7 +754,7 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_dblEyeY += 1.0f;
 			break;
 		case VK_DOWN:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
 				m_dblCenterY -= 1.0f;
 				break;
@@ -762,7 +762,7 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_dblEyeY -= 1.0f;
 			break;
 		case VK_BACK:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
 				m_dblCenterZ += 1.0f;
 				break;
@@ -770,7 +770,7 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_dblEyeZ += 1.0f;
 			break;
 		case VK_SPACE:
-			if ((::GetKeyState(VK_SHIFT)>>1))
+			if((::GetKeyState(VK_SHIFT)>>1))
 			{
 				m_dblCenterZ -= 1.0f;
 				break;
@@ -955,7 +955,7 @@ void CGL_TwoView::OnViewCapture()
    int clientWidth = clientRect.Width();
    int clientHeight = clientRect.Height();
    SIZE_T cbBitMatrix = clientWidth * clientHeight * 3;
-   //Lets see if we can use glReadPixels
+   //Lets see ifwe can use glReadPixels
    LPVOID pVoid = nullptr;
    try
    {
@@ -1009,7 +1009,7 @@ void CGL_TwoView::OnViewCapture()
       ::AfxMessageBox(csMessage);
       return;
    }
-   //End lets see if we can use glReadPixels
+   //End lets see ifwe can use glReadPixels
    if(nullptr != thisApp->m_pImgTemplate)
    {
       BOOL bPromptResult = AfxGetApp()->DoPromptFileName(csFileName, AFX_IDS_APP_TITLE,
@@ -1091,10 +1091,10 @@ void CGL_TwoView::OnViewCapture()
 
 void CGL_TwoView::OnViewAnimate()
 {
-   if (__nullptr == m_pAnimThread)
+   if(__nullptr == m_pAnimThread)
    {
       m_pAnimThread = AfxBeginThread(CGL_TwoView::ThreadAnimatedDraw, (LPVOID)this);
-      if (__nullptr != m_pAnimThread)
+      if(__nullptr != m_pAnimThread)
       {
          m_hAnimThread = m_pAnimThread->m_hThread;
       }
