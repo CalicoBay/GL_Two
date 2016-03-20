@@ -22,6 +22,11 @@ static char THIS_FILE[] = __FILE__;
 DEFINE_GUID(ImageFormatPNG, 0xb96b3caf, 0x0728, 0x11d3, 0x9d, 0x7b, 0x00, 0x00, 0xf8, 0x1e, 0xf3, 0x2e);
 
 VOID WINAPI DrawAPC(ULONG_PTR dwParam){}
+VOID WINAPI AnimAPC(ULONG_PTR dwParam)
+{ 
+   wglMakeCurrent(NULL, NULL);
+   ::AfxEndThread(1);
+}
 
 class CGLObjects;
 /////////////////////////////////////////////////////////////////////////////
@@ -115,6 +120,7 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
       AfxMessageBox(_T("CGL_TwoView::ThreadDraw returned 0"));
       return 0;	// illegal parameter
    }
+
    DWORD dwWaitResult = ::WaitForSingleObjectEx(pView->m_hDrawEvent, INFINITE, TRUE);
    while(WAIT_IO_COMPLETION != dwWaitResult)
    {
@@ -165,13 +171,14 @@ UINT CGL_TwoView::ThreadDraw(LPVOID pParam)
          {
             glCallList(pView->m_RefForList);
          }
-         //SwapBuffers(pView->GetDC()->m_hDC);
+
          wglMakeCurrent(NULL, NULL);
       }
       else
       {
          uiReturn = 0;
       }
+
       dwWaitResult = ::WaitForSingleObjectEx(pView->m_hDrawEvent, INFINITE, TRUE);
    }
    return uiReturn;
@@ -216,8 +223,8 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
       {
          glCullFace(GL_BACK);
          glEnable(GL_CULL_FACE);
-      }      else
-
+      }
+      else
       {
          glDisable(GL_CULL_FACE);
       }
@@ -230,14 +237,18 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
          pView->m_bDirty = FALSE;
       }
 
-      for (GLfloat azimuth = 0.0; azimuth < 360.0; azimuth += 0.100f)
+      for(GLfloat azimuth = 0.0; azimuth < 360.0; azimuth += 0.100f)
       {
          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
          glRotatef(azimuth, 0.0, 1.0, 0.0);
          glCallList(pView->m_RefForList);
          glFlush();
-         //SwapBuffers(pView->GetDC()->m_hDC);
-         if(WAIT_IO_COMPLETION == ::SleepEx(1, TRUE)) break;
+
+         if(WAIT_IO_COMPLETION == ::SleepEx(1, TRUE))
+         {
+            break;
+         }
+
          glLoadIdentity();
       }
       wglMakeCurrent(NULL, NULL);
@@ -249,33 +260,11 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
       csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
       ::AfxMessageBox(csMessage);
    }
+
    pView->m_pAnimThread = __nullptr;
    return 1;
 }
 
-
-UINT CGL_TwoView::ThreadObjectDraw(LPVOID pParam)
-{
-	if(NULL == pParam)
-   {
-      ::AfxMessageBox(_T("ThreadObjectDraw pParam is NULL"));
-      return 0;
-   }
-
- //  PDRAWPARAMETERS pDrawParams = (PDRAWPARAMETERS)pParam;
- //  if((nullptr == pDrawParams->pGLObject) || (NULL == pDrawParams->pView) || (!pDrawParams->pView->IsKindOf(RUNTIME_CLASS(CGL_TwoView))))
-	//{
-	//	AfxMessageBox(_T("Thread returned 0"));
-	//	return 0;	// illegal parameter
-	//}
-
-	//wglMakeCurrent(pDrawParams->pView->GetDC()->m_hDC, pDrawParams->pView->m_hRC);
-	//pDrawParams->pGLObject->Draw(GL_RENDER);//glRenderMode((default)GL_RENDER | GL_SELECT | GL_FEEDBACK)
- //  SwapBuffers(pDrawParams->pView->GetDC()->m_hDC);
- //  wglMakeCurrent(NULL, NULL);
-   delete pParam;
-	return 1;
-}
 /////////////////////////////////////////////////////////////////////////////
 // CGL_TwoView diagnostics
 
@@ -314,16 +303,8 @@ void CGL_TwoView::OnObjectsNew()
 			delete pGLObject;
 			return;
 		}
-		m_bDirty = TRUE;
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -332,16 +313,8 @@ void CGL_TwoView::OnPrimitivesPolygons()
 	CGLObjects* pGLObject = CGLPolygon::Make();
 	if(pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -350,16 +323,8 @@ void CGL_TwoView::OnSolidsBox()
 	CGLObjects* pGLObject = CGLBox::Make();
 	if(NULL != pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -368,16 +333,8 @@ void CGL_TwoView::OnSolidsCone()
 	CGLObjects* pGLObject = CGLCone::Make();
 	if(NULL != pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -386,16 +343,8 @@ void CGL_TwoView::OnSolidsDisk()
 	CGLObjects* pGLObject = CGLDisk::Make();
 	if(NULL != pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}	
 }
 /*
@@ -432,16 +381,8 @@ void CGL_TwoView::OnSolidsSphere()
 	CGLObjects* pGLObject = CGLSphere::Make();
 	if(NULL != pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -450,16 +391,8 @@ void CGL_TwoView::OnSolidsTeapot()
 	CGLObjects* pGLObject = CGLTeapot::Make();
 	if(NULL != pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -475,16 +408,8 @@ void CGL_TwoView::OnSolidsTorus()
 	CGLObjects* pGLObject = CGLTorus::Make();
 	if(NULL != pGLObject)
 	{
-		PDRAWPARAMETERS pDrawParams = new DRAWPARAMETERS;
-      if(NULL != pDrawParams)
-      {
-         pDrawParams->pView = this;
-		   pDrawParams->pGLObject = pGLObject;
-
-		   GetDocument()->Add(pGLObject);
-		   AfxBeginThread(CGL_TwoView::ThreadObjectDraw, (LPVOID)pDrawParams);
-      }
-		m_bDirty = TRUE;
+      GetDocument()->Add(pGLObject);
+      m_bDirty = TRUE;
 	}
 }
 
@@ -492,7 +417,7 @@ void CGL_TwoView::OnSolidsTorus()
 
 void CGL_TwoView::OnDestroy() 
 {
-   if(0 != ::QueueUserAPC(DrawAPC, m_hAnimThread, NULL))
+   if(0 != ::QueueUserAPC(AnimAPC, m_hAnimThread, NULL))
    {
       ::WaitForSingleObject(m_hAnimThread, INFINITE);
    }
@@ -700,7 +625,8 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	switch(nChar)
 	{
       case VK_ESCAPE:
-         ::QueueUserAPC(DrawAPC, m_hAnimThread, NULL);
+         ::QueueUserAPC(AnimAPC, m_hAnimThread, NULL);
+         m_pAnimThread = __nullptr;
          break;
       case VK_ADD:
 			if(m_dblFieldOfView > 5)

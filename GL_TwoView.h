@@ -1,8 +1,7 @@
 // GL_TwoView.h : interface of the CGL_TwoView class
 //
 /////////////////////////////////////////////////////////////////////////////
-#ifndef __GLVIEW_H__
-#define __GLVIEW_H__
+#pragma once
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -44,7 +43,6 @@ public:
    CWinThread* m_pAnimThread;
 	static UINT ThreadDraw(LPVOID pParam);
    static UINT ThreadAnimatedDraw(LPVOID pParam);
-   static UINT ThreadObjectDraw(LPVOID pParam);
 protected:
 	CString  m_strWndClass;
 	HGLRC    m_hRC;
@@ -118,5 +116,4 @@ protected:
 inline CGL_TwoDoc* CGL_TwoView::GetDocument()
    { return (CGL_TwoDoc*)m_pDocument; }
 #endif
-#endif //__GLVIEW_H__
 /////////////////////////////////////////////////////////////////////////////
