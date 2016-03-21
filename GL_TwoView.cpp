@@ -83,6 +83,7 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr), m_pAnimThread(__nullptr)
    m_bBlackBackground = TRUE;
    m_bCullFaces = FALSE;
    m_hDrawEvent = ::CreateEvent(__nullptr, FALSE, FALSE, __nullptr);
+   m_hAnimThread = NULL;
    m_pDrawThread = new CWinThread(CGL_TwoView::ThreadDraw, (LPVOID)this);
    if(__nullptr != m_pDrawThread)
    {
@@ -246,10 +247,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
          glCallList(pView->m_RefForList);
          glFlush();
 
-         if(WAIT_IO_COMPLETION == ::SleepEx(1, TRUE))
-         {
-            break;
-         }
+         ::SleepEx(1, TRUE);
 
          glLoadIdentity();
       }
@@ -263,7 +261,6 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
       ::AfxMessageBox(csMessage);
    }
 
-   pView->m_pAnimThread = __nullptr;
    return 1;
 }
 
@@ -423,6 +420,23 @@ void CGL_TwoView::OnDestroy()
    {
       ::WaitForSingleObject(m_hAnimThread, INFINITE);
    }
+
+   if (NULL != m_hAnimThread)
+   {
+      if (::CloseHandle(m_hAnimThread))
+      {
+#if defined(_DEBUG)
+         ::AfxMessageBox(_T("Closed duplicate handle m_hAnimThread"));
+#endif
+      }
+      else
+      {
+#if defined(_DEBUG)
+         ::AfxMessageBox(_T("Could not close duplicate handle m_hAnimThread"));
+#endif
+      }
+   }
+
    if(__nullptr != m_pDrawThread)
    {
       ::QueueUserAPC(DrawAPC, m_pDrawThread->m_hThread, NULL);
@@ -625,7 +639,8 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
       case VK_ESCAPE:
          ::QueueUserAPC(AnimAPC, m_hAnimThread, NULL);
-         m_pAnimThread = __nullptr;
+         ::CloseHandle(m_hAnimThread);
+         m_hAnimThread = NULL;
          break;
       case VK_ADD:
 			if(m_dblFieldOfView > 5)
@@ -1016,12 +1031,37 @@ void CGL_TwoView::OnViewCapture()
 
 void CGL_TwoView::OnViewAnimate()
 {
-   if(__nullptr == m_pAnimThread)
+   if (NULL != m_hAnimThread)
    {
-      m_pAnimThread = AfxBeginThread(CGL_TwoView::ThreadAnimatedDraw, (LPVOID)this);
-      if(__nullptr != m_pAnimThread)
-      {
-         m_hAnimThread = m_pAnimThread->m_hThread;
+      ::CloseHandle(m_hAnimThread);
+      m_hAnimThread = NULL;
+   }
+
+   m_pAnimThread = AfxBeginThread
+                  (
+                     CGL_TwoView::ThreadAnimatedDraw,
+                     (LPVOID)this,
+                     THREAD_PRIORITY_NORMAL,
+                     CREATE_SUSPENDED
+                  );
+   if(__nullptr != m_pAnimThread)
+   {
+      if (!::DuplicateHandle
+         (
+            ::GetCurrentProcess(),
+            m_pAnimThread->m_hThread,
+            ::GetCurrentProcess(),
+            &m_hAnimThread,
+            0,
+            FALSE,
+            DUPLICATE_SAME_ACCESS
+            ))
+      {// Can't duplicate so terminate right after we resume.
+         m_hAnimThread = NULL;
+         ::QueueUserAPC(AnimAPC, m_pAnimThread->m_hThread, NULL);
+         ::AfxMessageBox(_T("Can't duplicate animate thread handle"));
       }
+
+      m_pAnimThread->ResumeThread();
    }
 }
