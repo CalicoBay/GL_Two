@@ -26,21 +26,21 @@ protected: // create from serialization only
 	afx_msg void OnUpdateLookFrom(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateLookAt(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateNearFar(CCmdUI* pCmdUI);
-   afx_msg void OnUpdateViewWireframe(CCmdUI *pCmdUI);
-   afx_msg void OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI);
-   afx_msg void OnUpdateViewDirty(CCmdUI *pCmdUI);
-   // Attributes
+	afx_msg void OnUpdateViewWireframe(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateViewBlackAndWhite(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateViewDirty(CCmdUI *pCmdUI);
+	// Attributes
 	BOOL m_bDirty;
-   BOOL m_bActive;
-   HANDLE m_hDrawEvent;
-   HANDLE m_hAnimThread;
+	BOOL m_bActive;
+	HANDLE m_hDrawEvent;
+	HANDLE m_hAnimThread;
 public:
 	//CGL_TwoView();
 	CGL_TwoDoc* GetDocument();
-   CWinThread* m_pDrawThread;
-   CWinThread* m_pAnimThread;
+	CWinThread* m_pDrawThread;
+	CWinThread* m_pAnimThread;
 	static UINT ThreadDraw(LPVOID pParam);
-   static UINT ThreadAnimatedDraw(LPVOID pParam);
+	static UINT ThreadAnimatedDraw(LPVOID pParam);
 protected:
 	CString  m_strWndClass;
 	HGLRC    m_hRC;
@@ -49,7 +49,8 @@ protected:
 	GLdouble m_dblEyeX, m_dblEyeY, m_dblEyeZ;
 	GLdouble m_dblCenterX, m_dblCenterY, m_dblCenterZ;
 	GLdouble m_nUpX, m_nUpY, m_nUpZ;
-   GLuint m_RefForList;
+	GLuint m_RefForList;
+	DWORD m_dwDrawCount;
 
 // Operations
 // Overrides

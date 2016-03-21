@@ -93,6 +93,7 @@ CGL_TwoView::CGL_TwoView() : m_pDrawThread(__nullptr), m_pAnimThread(__nullptr)
    ULARGE_INTEGER uli = { 0 };
    uli.QuadPart = (ULONGLONG)this;
    m_RefForList = uli.LowPart;
+   m_dwDrawCount = 0UL;
 }
 
 CGL_TwoView::~CGL_TwoView()
@@ -105,7 +106,8 @@ CGL_TwoView::~CGL_TwoView()
 
 void CGL_TwoView::OnDraw(CDC* pDC)
 {
-   ::SetEvent(m_hDrawEvent);
+	++m_dwDrawCount;
+	::SetEvent(m_hDrawEvent);
    //pDC->SetTextColor(RGB(255, 0, 0));
    //CString csTextOut(_T("Further Testing OpenGL and GDI Capture"));
    //pDC->TextOutW(20, 20, csTextOut);
@@ -739,8 +741,7 @@ void CGL_TwoView::OnUpdateNearFar(CCmdUI* pCmdUI)
 
 void CGL_TwoView::OnHelpImplementationInfo() 
 {
-	CString message,lights, planes, depth_bits,
-		stacks, cur_stacks, clips, texture;
+	CString message,lights, planes, depth_bits, stacks, cur_stacks, clips, texture, drawCount;
 	GLint max_lights, bit_planes, depth, stack_depth, cur_stack_depth,
 		clip_planes, tex_size;
 	wglMakeCurrent(GetDC()->m_hDC, m_hRC);
@@ -758,7 +759,8 @@ void CGL_TwoView::OnHelpImplementationInfo()
 	clips.Format(_T("\nMaximum clipping planes is %d."), clip_planes);
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &tex_size);
 	texture.Format(_T("\nMaximum texture height or width is %d."), tex_size);
-	message = lights + planes + depth_bits + stacks + cur_stacks + clips + texture;
+	drawCount.Format(_T("\nOnDraw has been called %d times."), m_dwDrawCount);
+	message = lights + planes + depth_bits + stacks + cur_stacks + clips + texture + drawCount;
 	AfxMessageBox(message);
 	wglMakeCurrent(NULL, NULL);
 }
