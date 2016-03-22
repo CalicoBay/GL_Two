@@ -25,7 +25,7 @@ VOID WINAPI DrawAPC(ULONG_PTR dwParam){}
 VOID WINAPI AnimAPC(ULONG_PTR dwParam)
 { 
    wglMakeCurrent(NULL, NULL);
-   ::AfxEndThread(1);
+   ::AfxEndThread(2);
 }
 
 class CGLObjects;
@@ -256,9 +256,12 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
    else
    {
       dwLastError = ::GetLastError();
+#if defined(_DEBUG)
       CString csMessage;
       csMessage.Format(_T("wglMakeCurrent returned 0x%08X"), dwLastError);
       ::AfxMessageBox(csMessage);
+#endif
+      return dwLastError;
    }
 
    return 1;
@@ -416,14 +419,35 @@ void CGL_TwoView::OnSolidsTorus()
 
 void CGL_TwoView::OnDestroy() 
 {
+   DWORD dwLastError;
+   CString csMessage;
+   ::SetLastError(NO_ERROR);
    if(0 != ::QueueUserAPC(AnimAPC, m_hAnimThread, NULL))
    {
       ::WaitForSingleObject(m_hAnimThread, INFINITE);
    }
-
-   if (NULL != m_hAnimThread)
+   else
    {
-      if (::CloseHandle(m_hAnimThread))
+      dwLastError = ::GetLastError();
+      if(NULL == m_hAnimThread)
+      {
+#if defined(_DEBUG)
+         csMessage.Format(_T("QueueUserAPC with a NULL handle returned 0x%08X."), dwLastError);
+         ::AfxMessageBox(csMessage);
+#endif
+      }
+      else
+      {
+#if defined(_DEBUG)
+         csMessage.Format(_T("QueueUserAPC with a non-NULL handle returned 0x%08X."), dwLastError);
+         ::AfxMessageBox(csMessage);
+#endif
+      }
+   }
+
+   if(NULL != m_hAnimThread)
+   {
+      if(::CloseHandle(m_hAnimThread))
       {
 #if defined(_DEBUG)
          ::AfxMessageBox(_T("Closed duplicate handle m_hAnimThread"));
@@ -642,11 +666,13 @@ void CGL_TwoView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
          ::CloseHandle(m_hAnimThread);
          m_hAnimThread = NULL;
          break;
+      case VK_OEM_PLUS:
       case VK_ADD:
 			if(m_dblFieldOfView > 5)
 				m_dblFieldOfView -= 5;
 			break;
-		case VK_SUBTRACT:
+      case VK_OEM_MINUS:
+      case VK_SUBTRACT:
 			if(m_dblFieldOfView < 175)
 				m_dblFieldOfView += 5;
 			break;
@@ -1031,22 +1057,51 @@ void CGL_TwoView::OnViewCapture()
 
 void CGL_TwoView::OnViewAnimate()
 {
-   if (NULL != m_hAnimThread)
+   BOOL bReturn;
+   DWORD dwExitCode;
+   DWORD dwLastError;
+   if(NULL != m_hAnimThread)
    {
-      ::CloseHandle(m_hAnimThread);
-      m_hAnimThread = NULL;
+      //::QueueUserAPC(AnimAPC, m_hAnimThread, NULL);
+      ::SetLastError(NO_ERROR);
+      bReturn = GetExitCodeThread(m_hAnimThread, &dwExitCode);
+      dwLastError = ::GetLastError();
+
+      if(bReturn)
+      {
+         if(STILL_ACTIVE == dwExitCode)
+         {
+#if defined(_DEBUG)
+            ::AfxMessageBox(_T("Already animating!"));
+#endif
+            return;
+         }
+         else
+         {
+            ::CloseHandle(m_hAnimThread);
+            m_hAnimThread = NULL;
+         }
+      }
+      else
+      {
+#if defined(_DEBUG)
+         CString csMessage;
+         csMessage.Format(_T("GetExitCodeThread returned 0x%08X"), dwLastError);
+         ::AfxMessageBox(csMessage);
+#endif
+      }
    }
 
    m_pAnimThread = AfxBeginThread
-                  (
-                     CGL_TwoView::ThreadAnimatedDraw,
-                     (LPVOID)this,
-                     THREAD_PRIORITY_NORMAL,
-                     CREATE_SUSPENDED
-                  );
+      (
+         CGL_TwoView::ThreadAnimatedDraw,
+         (LPVOID)this,
+         THREAD_PRIORITY_NORMAL,
+         CREATE_SUSPENDED
+         );
    if(__nullptr != m_pAnimThread)
    {
-      if (!::DuplicateHandle
+      if(!::DuplicateHandle
          (
             ::GetCurrentProcess(),
             m_pAnimThread->m_hThread,
@@ -1059,7 +1114,9 @@ void CGL_TwoView::OnViewAnimate()
       {// Can't duplicate so terminate right after we resume.
          m_hAnimThread = NULL;
          ::QueueUserAPC(AnimAPC, m_pAnimThread->m_hThread, NULL);
+#if defined(_DEBUG)
          ::AfxMessageBox(_T("Can't duplicate animate thread handle"));
+#endif
       }
 
       m_pAnimThread->ResumeThread();
