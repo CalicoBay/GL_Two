@@ -156,12 +156,17 @@ CGLObjects* CGLObjects::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc
 void CGLObjects::Serialize(CArchive& ar)
 {
 	CObject::Serialize( ar );
-	if (ar.IsStoring())
+   BYTE bColor = 0;
+   BYTE bComp = 0;
+   BYTE bConvex = 0;
+   if (ar.IsStoring())
 	{
-		BYTE bColor, bComp, bConvex;
-		bColor = m_bColorWasDifferent << 1; bColor += m_bColorIsDifferent;
-		bComp = m_bIsThisClipped << 1; bComp += m_bComposite;
-		bConvex = m_bClosed << 1; bConvex += m_bConvex;
+		bColor |= (m_bColorWasDifferent << 1);
+      bColor |= m_bColorIsDifferent;
+		bComp |= (m_bIsThisClipped << 1);
+      bComp |= m_bComposite;
+		bConvex |= (m_bClosed << 1);
+      bConvex |= m_bConvex;
 		ar << m_color[0] << m_color[1] << m_color[2];
 		ar << bColor <<	m_Alpha <<	bComp << bConvex;
 		ar << m_strDescriptor;
@@ -169,18 +174,16 @@ void CGLObjects::Serialize(CArchive& ar)
 	else
 	{
 		m_pDocument = (CGL_TwoDoc*)ar.m_pDocument;
-		BYTE bColor, bComp, bConvex;
 		ar >> m_color[0] >> m_color[1] >> m_color[2];
 		ar  >>	bColor  >>	m_Alpha >>	bComp >> bConvex;
 		ar >> m_strDescriptor;
 
-		m_bColorWasDifferent = bColor >> 1;
-		m_bColorIsDifferent = bColor - (m_bColorWasDifferent << 1);
-		m_bIsThisClipped = bComp >> 1;
-		m_bComposite = bComp - (m_bIsThisClipped << 1);
-		m_bComposite = bComp;
-		m_bClosed = bConvex >> 1;
-		m_bConvex = bConvex - (m_bClosed << 1);
+		m_bColorWasDifferent = bColor & 0x02;
+		m_bColorIsDifferent = bColor & 0x01;
+		m_bIsThisClipped = bComp & 0x02;
+		m_bComposite = bComp & 0x01;
+		m_bClosed = bConvex & 0x02;
+		m_bConvex = bConvex & 0x01;
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
