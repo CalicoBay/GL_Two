@@ -138,7 +138,7 @@ void CGLObjects::Draw(GLenum mode)
 {
 }
 
-int CGLObjects::Change()
+INT_PTR CGLObjects::Change()
 {
 	return 1;
 }
@@ -327,7 +327,7 @@ void CGLBox::Draw(GLenum mode)
 	glDisable(GL_NORMALIZE);
 }
 
-int CGLBox::Change()
+INT_PTR CGLBox::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)1;
@@ -462,7 +462,7 @@ CGLComp::CGLComp(GLubyte* gl_color3bytes,GLdouble* transform3d,
 	m_bColorWasDifferent = FALSE;
 }
 
-int CGLComp::Change()
+INT_PTR CGLComp::Change()
 {
 	CCompositeDlg dlg(this);
 	dlg.m_ScaleX	= GetWidth();
@@ -718,7 +718,7 @@ CGLCone::CGLCone(GLubyte* gl_color3bytes, GLdouble* transform3d,
 	m_strDescriptor = "Cone";
 }
 
-int CGLCone::Change()
+INT_PTR CGLCone::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)2;
@@ -904,7 +904,7 @@ CGLDisk::CGLDisk(GLubyte* gl_color3bytes, GLdouble* transform3d,
 	m_strDescriptor = "Disk";
 }
 
-int CGLDisk::Change()
+INT_PTR CGLDisk::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)3;
@@ -1141,7 +1141,7 @@ void CGLPolygon::Draw(GLenum mode)
 	//glFlush();
 }
 
-int CGLPolygon::Change()
+INT_PTR CGLPolygon::Change()
 {
 	CPolygonDlg dlg;
 	int vertex_no = 0;
@@ -1362,7 +1362,7 @@ void CGLSphere::Draw(GLenum mode)
    gluDeleteQuadric(quadObj);
 }
 
-int CGLSphere::Change()
+INT_PTR CGLSphere::Change()
 {
 	CConstructionDialog dlg;				
 	dlg.type_of_solid = (CConstructionDialog::Solids)8;
@@ -1570,7 +1570,7 @@ void CGLTeapot::Draw(GLenum mode)
 	//glEndList();
 }
 
-int CGLTeapot::Change()
+INT_PTR CGLTeapot::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)9;
@@ -1788,7 +1788,7 @@ void CGLTorus::Draw(GLenum mode)
 	//glFlush();
 }
 
-int CGLTorus::Change()
+INT_PTR CGLTorus::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)11;

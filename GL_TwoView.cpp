@@ -300,7 +300,7 @@ void CGL_TwoView::OnObjectsNew()
 	{
 		pGLObject->SetDocument(GetDocument());
 		pGLObject->SetColorIsDifferent(FALSE);
-		if(!pGLObject->Change())
+		if(IDOK != pGLObject->Change())
 		{
 			delete pGLObject;
 			return;
