@@ -192,11 +192,11 @@ void CCompositeDlg::OnDblclkObjList()
 		return;
 	CGLObjects* pObj = 
 		(CGLObjects*)m_ObjectList.GetItemDataPtr(n_Selection);
-	if ((pObj == NULL)||((INT_PTR)pObj == -1))
+	if((pObj == NULL)||((INT_PTR)pObj == -1))
 		AfxMessageBox(_T("Object not found in Composite Map."));
 	else
 	{
-		if (pObj->Change())
+		if(IDOK == pObj->Change())
 		{
 			m_ObjectList.DeleteString(n_Selection);
 			m_ObjectList.InsertString(n_Selection, pObj->GetDescriptor());

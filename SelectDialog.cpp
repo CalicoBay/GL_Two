@@ -65,9 +65,9 @@ void CSelectDialog::OnDblclkHitList()
 {
 	int n_Selection = m_HitList.GetCurSel();
 	CGLObjects* pObject = (CGLObjects*)m_HitList.GetItemDataPtr(n_Selection);
-	if ((pObject == NULL)||((INT_PTR)pObject == -1))
+	if((pObject == NULL)||((INT_PTR)pObject == -1))
 		return;
-	if (pObject->Change())
+	if(IDOK == pObject->Change())
 	{
 			m_HitList.DeleteString(n_Selection);
 			m_HitList.InsertString(n_Selection, pObject->GetDescriptor());

@@ -28,7 +28,7 @@ long patchdata[][16] = {
 };
 
 #pragma warning(push)
-#pragma warning(disable:4305)
+#pragma warning(disable:4305 4838)
 float cpdata[][3] = {
 {0.2,0,2.7},{0.2,-0.112,2.7},{0.112,-0.2,2.7},{0,-0.2,2.7},{1.3375,0,2.53125},
 {1.3375,-0.749,2.53125},{0.749,-1.3375,2.53125},{0,-1.3375,2.53125},
@@ -138,7 +138,7 @@ void CGLObjects::Draw(GLenum mode)
 {
 }
 
-int CGLObjects::Change()
+INT_PTR CGLObjects::Change()
 {
 	return 1;
 }
@@ -156,12 +156,18 @@ CGLObjects* CGLObjects::Repeat(GLuint copies, GLdouble* offset, CGL_TwoDoc* pDoc
 void CGLObjects::Serialize(CArchive& ar)
 {
 	CObject::Serialize( ar );
-	if (ar.IsStoring())
+   BYTE bColor = 0;
+   BYTE bComp = 0;
+   BYTE bConvex = 0;
+   
+   if (ar.IsStoring())
 	{
-		BYTE bColor, bComp, bConvex;
-		bColor = m_bColorWasDifferent << 1; bColor += m_bColorIsDifferent;
-		bComp = m_bIsThisClipped << 1; bComp += m_bComposite;
-		bConvex = m_bClosed << 1; bConvex += m_bConvex;
+		bColor |= (m_bColorWasDifferent << 1);
+      bColor |= m_bColorIsDifferent;
+		bComp |= (m_bIsThisClipped << 1);
+      bComp |= m_bComposite;
+		bConvex |= (m_bClosed << 1);
+      bConvex |= m_bConvex;
 		ar << m_color[0] << m_color[1] << m_color[2];
 		ar << bColor <<	m_Alpha <<	bComp << bConvex;
 		ar << m_strDescriptor;
@@ -169,19 +175,17 @@ void CGLObjects::Serialize(CArchive& ar)
 	else
 	{
 		m_pDocument = (CGL_TwoDoc*)ar.m_pDocument;
-		BYTE bColor, bComp, bConvex;
 		ar >> m_color[0] >> m_color[1] >> m_color[2];
 		ar  >>	bColor  >>	m_Alpha >>	bComp >> bConvex;
 		ar >> m_strDescriptor;
 
-		m_bColorWasDifferent = bColor >> 1;
-		m_bColorIsDifferent = bColor - (m_bColorWasDifferent << 1);
-		m_bIsThisClipped = bComp >> 1;
-		m_bComposite = bComp - (m_bIsThisClipped << 1);
-		m_bComposite = bComp;
-		m_bClosed = bConvex >> 1;
-		m_bConvex = bConvex - (m_bClosed << 1);
-	}
+      m_bColorWasDifferent = (bColor & 0x02) ? true : false;
+      m_bColorIsDifferent = (bColor & 0x01) ? true : false;
+      m_bIsThisClipped = (bComp & 0x02) ? true : false;
+      m_bComposite = (bComp & 0x01) ? true : false;
+      m_bClosed = (bConvex & 0x02) ? true : false;
+      m_bConvex = (bConvex & 0x01) ? true : false;
+   }
 }
 ////////////////////////////////////////////////////////////////////////////////
 /*CGLClip
@@ -327,7 +331,7 @@ void CGLBox::Draw(GLenum mode)
 	glDisable(GL_NORMALIZE);
 }
 
-int CGLBox::Change()
+INT_PTR CGLBox::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)1;
@@ -462,7 +466,7 @@ CGLComp::CGLComp(GLubyte* gl_color3bytes,GLdouble* transform3d,
 	m_bColorWasDifferent = FALSE;
 }
 
-int CGLComp::Change()
+INT_PTR CGLComp::Change()
 {
 	CCompositeDlg dlg(this);
 	dlg.m_ScaleX	= GetWidth();
@@ -718,7 +722,7 @@ CGLCone::CGLCone(GLubyte* gl_color3bytes, GLdouble* transform3d,
 	m_strDescriptor = "Cone";
 }
 
-int CGLCone::Change()
+INT_PTR CGLCone::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)2;
@@ -904,7 +908,7 @@ CGLDisk::CGLDisk(GLubyte* gl_color3bytes, GLdouble* transform3d,
 	m_strDescriptor = "Disk";
 }
 
-int CGLDisk::Change()
+INT_PTR CGLDisk::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)3;
@@ -1141,7 +1145,7 @@ void CGLPolygon::Draw(GLenum mode)
 	//glFlush();
 }
 
-int CGLPolygon::Change()
+INT_PTR CGLPolygon::Change()
 {
 	CPolygonDlg dlg;
 	int vertex_no = 0;
@@ -1362,7 +1366,7 @@ void CGLSphere::Draw(GLenum mode)
    gluDeleteQuadric(quadObj);
 }
 
-int CGLSphere::Change()
+INT_PTR CGLSphere::Change()
 {
 	CConstructionDialog dlg;				
 	dlg.type_of_solid = (CConstructionDialog::Solids)8;
@@ -1570,7 +1574,7 @@ void CGLTeapot::Draw(GLenum mode)
 	//glEndList();
 }
 
-int CGLTeapot::Change()
+INT_PTR CGLTeapot::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)9;
@@ -1788,7 +1792,7 @@ void CGLTorus::Draw(GLenum mode)
 	//glFlush();
 }
 
-int CGLTorus::Change()
+INT_PTR CGLTorus::Change()
 {
 	CConstructionDialog dlg;
 	dlg.type_of_solid = (CConstructionDialog::Solids)11;

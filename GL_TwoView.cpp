@@ -247,7 +247,7 @@ UINT CGL_TwoView::ThreadAnimatedDraw(LPVOID pParam)
          glCallList(pView->m_RefForList);
          glFlush();
 
-         ::SleepEx(1, TRUE);
+         ::SleepEx(10, TRUE);
 
          glLoadIdentity();
       }
@@ -300,7 +300,7 @@ void CGL_TwoView::OnObjectsNew()
 	{
 		pGLObject->SetDocument(GetDocument());
 		pGLObject->SetColorIsDifferent(FALSE);
-		if(!pGLObject->Change())
+		if(IDOK != pGLObject->Change())
 		{
 			delete pGLObject;
 			return;
