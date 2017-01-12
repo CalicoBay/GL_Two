@@ -111,11 +111,6 @@ void CObjTreeDlg::OnCopyButton()
                      m_pCCompositeDlg->m_ObjectList.SetItemDataPtr(n_Selection, (void*)pCopied_Object);
                      m_pCompObj->m_CompList.AddTail(pCopied_Object);
                   }
-                  // I don't think this necessary we'll see
-                  //if(1UL == dlg.m_nCopies)
-                  //{
-                  //   break;
-                  //}
                   offset[0] += dlg.m_dblXOffset;
                   offset[1] += dlg.m_dblYOffset;
                   offset[2] += dlg.m_dblZOffset;
@@ -188,10 +183,6 @@ void CObjTreeDlg::OnCopyButton()
                         }
                         m_pCCompositeDlg->m_ObjectList.SetItemDataPtr(n_Selection, (void*)pCopied_Object);
                         m_pCompObj->m_CompList.AddTail(pCopied_Object);
-                     }
-                     if(1UL == dlg.m_nCopies)
-                     {
-                        break;
                      }
                      offset[0] += dlg.m_dblXOffset;
                      offset[1] += dlg.m_dblYOffset;
